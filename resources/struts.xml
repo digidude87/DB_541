@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+
+	<package name="default" extends="struts-default, json-default"
+		namespace="/">
+		<action name="loadartistbrowser" class="com.main.BrowseArtistAction"
+			method="loadPage">
+			<result name="success">/jsp/browseartists.jsp</result>
+		</action>
+		<action name="loadartistbrowserlocation" class="com.main.BrowseArtistAction"
+			method="loadPage">
+			<result name="success">/jsp/browseartistsbylocation.jsp</result>
+		</action>
+		<action name="loadartistbrowsergenre" class="com.main.BrowseArtistAction"
+			method="loadPage">
+			<result name="success">/jsp/browseartistsbygenre.jsp</result>
+		</action>
+		<action name="loadSuggestions" class="com.main.BrowseArtistAction"
+			method="loadSuggestions">
+			<result name="success" type="json">/jsp/browseartists.jsp</result>
+		</action>
+		<action name="loadSuggestionsLocation" class="com.main.BrowseArtistAction"
+			method="loadSuggestionsLocation">
+			<result name="success" type="json">/jsp/browseartists.jsp</result>
+		</action>
+		<action name="loadartistPage" class="com.main.ArtistAction"
+			method="loadArtistPage">
+			<result name="success">/jsp/artistprofile.jsp</result>
+		</action>
+		<action name="loadArtistDetails" class="com.main.ArtistAction"
+			method="loadArtistDetails">
+			<result name="success" type="json">/jsp/artistprofile.jsp</result>
+		</action>
+		<action name="loadSongs" class="com.main.ArtistAction" method="loadSongs">
+			<result name="success" type="json">/jsp/artistprofile.jsp</result>
+		</action>
+		<action name="underconstruction" class="com.main.ArtistAction"
+			method="underConstruction">
+			<result name="success">/jsp/underconstruction.jsp</result>
+		</action>
+		<action name="crawl" class="com.main.CrawlAction" method="crawl">
+			<result name="success">/jsp/index.jsp</result>
+		</action>
+		<action name="login" class="com.main.BrowseArtistAction"
+			method="login">
+			<result name="success">/jsp/index.jsp</result>
+			<result name="input">/jsp/index.jsp</result>
+		</action>
+		<action name="logout" class="com.main.BrowseArtistAction"
+			method="logout">
+			<result name="success">/jsp/index.jsp</result>
+		</action>
+		<action name="loadHome" class="com.main.BrowseArtistAction"
+			method="loadHome">
+			<result name="success">/jsp/index.jsp</result>
+		</action>
+		<action name="loadConsole" class="com.main.BrowseArtistAction"
+			method="loadHome">
+			<result name="success">/jsp/artistconsole.jsp</result>
+		</action>
+	</package>
+</struts>
