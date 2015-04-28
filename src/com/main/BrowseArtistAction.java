@@ -219,6 +219,7 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 					addActionError("Please enter valid credentials");
 				} else {
 					session.put("artistName", userName);
+					session.put("artistId", uid);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

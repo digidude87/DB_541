@@ -2,29 +2,34 @@
 	width: 200px;
 	margin-top: 10px;
 }
-	
+
 #menu8 li a {
 	text-decoration: none;
 	height: 32px;
-  	voice-family: "\"}\""; 
-  	voice-family: inherit;
-  	height: 24px;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	height: 24px;
 }
-	
-#menu8 li a:link, #menu8 li a:visited {
+
+#menu8 li a:link,#menu8 li a:visited {
 	color: #777;
 	display: block;
 	/* background: url(images/menu8.gif); */
 	padding: 8px 0 0 20px;
 }
-	
-#menu8 li a:hover {
+
+#menu8 li:not(.current):hover a {
 	color: #257EB7;
 	/* background: url(images/menu8.gif) 0 -32px; */
 	padding: 8px 0 0 25px;
 }
-	
-#menu8 li a:active {
+
+#menu8 li.current a {
+	color: #257EB7;
+	/* background: url(images/menu8.gif) 0 -32px; */
+}
+
+#menu8 li a:active,a:current {
 	color: #fff;
 	/* background: url(images/menu8.gif) 0 -64px; */
 	padding: 8px 0 0 25px;
@@ -34,4 +39,45 @@
 	list-style: none;
 	margin: 0;
 	padding: 0;
+}
+
+/* Generated via www.cssmenubuilder.com */
+.menu {
+	margin: 0;
+	padding: 0;
+	width: 215px;
+	list-style: none;
+	background: rgb(255, 255, 255);
+}
+
+.menu li {
+	padding: 0;
+	margin: 0 0 1px 0;
+	height: 40px;
+	display: block;
+}
+
+.menu li a {
+	text-align: left;
+	height: 40px;
+	padding: 0px 25px;
+	font: 13px Verdana, Arial, Helvetica, sans-serif;
+	color: rgb(255, 255, 255);
+	display: block;
+	background: url('verMenuImagesEd.png') 0px 0px no-repeat;
+	text-decoration: none;
+}
+
+.menu li a:hover {
+	background: url('verMenuImagesEd.png') 0px -40px no-repeat;
+	color: rgb(255, 255, 255);
+}
+
+.menu li a.active,.menu li a.active:hover {
+	background: url('verMenuImagesEd.png') 0px -80px no-repeat;
+	color: rgb(255, 255, 255);
+}
+
+.menu li a span {
+	line-height: 40px;
 }

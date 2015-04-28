@@ -80,10 +80,10 @@ public class ArtistDAO {
 		sql.append("\")");
 		ResultSet rs = db.runSql(sql.toString());
 		AlbumTO temp;
-		int count=0;
+		int count = 0;
 		while (rs.next()) {
 			temp = new AlbumTO();
-			temp.setAlbumBarCode(rs.getNString("albumBarCode"));
+			temp.setAlbumBarCode(rs.getString("albumBarCode"));
 			temp.setAlbumCountry(rs.getString("albumCountry"));
 			temp.setAlbumId(rs.getInt("albumId"));
 			temp.setAlbumLanguage(rs.getString("albumLanguage"));
@@ -92,18 +92,68 @@ public class ArtistDAO {
 			albums.add(temp);
 			count++;
 		}
-		System.out.println("Album Count : "+count);
+		System.out.println("Album Count : " + count);
 		List<SongTO> tempSongs;
 		Map<AlbumTO, List<SongTO>> retAlbums = new HashMap<AlbumTO, List<SongTO>>();
 		for (AlbumTO album : albums) {
 			tempSongs = retAlbums.get(album);
-			if(tempSongs==null){
+			if (tempSongs == null) {
 				tempSongs = new ArrayList<SongTO>();
 			}
 			tempSongs.add(songsMap.get(album.getSongId()));
 			retAlbums.put(album, tempSongs);
 		}
-		System.out.println("Album Count in Map : "+retAlbums.keySet().size());
+		System.out.println("Album Count in Map : " + retAlbums.keySet().size());
 		return retAlbums;
+	}
+
+	public List<SongTO> loadSongInfo(String artistId) throws SQLException,
+			IOException {
+		List<SongTO> songs = new ArrayList<SongTO>();
+		String sql = "select distinct songName, youtubeId, youtubeName, url, artistId, releaseDate, decade, youtubeDate, crawlDate, viewCount, crawlDelta, rating, viewCountRate, duration, songLanguage, songCountry from songs where artistId = "
+				+ artistId;
+		ResultSet rs = db.runSql(sql);
+		SongTO temp;
+		while (rs.next()) {
+			temp = new SongTO();
+			temp.setArtistId(Integer.parseInt(rs.getString("artistId")));
+			temp.setCrawlDate(rs.getDate("crawlDate"));
+			temp.setCrawlDelta(rs.getInt("crawlDelta"));
+			temp.setDecade(rs.getInt("decade"));
+			temp.setDuration(rs.getString("duration"));
+			temp.setRating(rs.getInt("rating"));
+			temp.setReleaseDate(rs.getInt("releaseDate"));
+			temp.setSongCountry(rs.getString("songCountry"));
+			temp.setSongLanguage(rs.getString("songLanguage"));
+			temp.setSongName(rs.getString("songName"));
+			temp.setUrl(rs.getString("url").replace("watch?v=", "v/"));
+			temp.setViewCount(rs.getInt("viewCount"));
+			temp.setViewCountRate(rs.getFloat("viewCountRate"));
+			temp.setYoutubeDate(rs.getDate("youtubeDate"));
+			temp.setYoutubeId(rs.getString("youtubeId"));
+			temp.setYoutubeName(rs.getString("youtubeName"));
+			songs.add(temp);
+		}
+		return songs;
+	}
+
+	public List<AlbumTO> loadAlbumInfo(String artistId) throws SQLException,
+			IOException {
+		List<AlbumTO> albums = new ArrayList<AlbumTO>();
+		String sql = "select * from Albumsnew where artistId = "
+				+ artistId;
+		ResultSet rs = db.runSql(sql);
+		AlbumTO temp;
+		while (rs.next()) {
+			temp = new AlbumTO();
+			temp.setAlbumBarCode(rs.getString("albumBarCode"));
+			temp.setAlbumCountry(rs.getString("albumCountry"));
+			temp.setAlbumId(rs.getInt("albumId"));
+			temp.setAlbumLanguage(rs.getString("albumLanguage"));
+			temp.setAlbumName(rs.getString("albumName"));
+			temp.setSongId(rs.getString("songId"));
+			albums.add(temp);
+		}
+		return albums;
 	}
 }

@@ -73,15 +73,11 @@
 					<!-- Nav Starts -->
 					<div class="navbar-collapse  collapse">
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="#home">Home</a>
-							</li>
-							<li><a href="#about">About</a>
-							</li>
-							<li><a href="#playlist">Contact Us</a>
-							</li>
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
+							<li><a href="loadAboutUs.action">About Us</a>
+							</li>
 							<li><a href="underconstruction.action">Sign Up</a>
 							</li>
 							<%
@@ -90,6 +86,8 @@
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
 							%> </i> </a>
+							</li>
+							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="logout.action">Sign out </a>
 							</li>
@@ -141,8 +139,9 @@
 							<a href="http://the.echonest.com" target="_blank"><img src="images/echonest.gif" width="150px;" height="50px;" /></a>
 							<a href="https://www.spotify.com" target="_blank"><img
 								src="images/spotify-connect.png" width="150px;" height="50px;" /></a>
-							<a href="https://www.youtube.com" target="_blank"><img src="images/youtube-logo.jpg" width="120px;" height="50px;" /></a>
-							<a href="https://tagul.com/" target="_blank"><img src="images/Tagul.png" width="120px;" height="50px;" /></a>
+							<a href="https://www.youtube.com" target="_blank"><img src="images/youtube-logo.jpg" width="100px;" height="50px;" /></a>
+							<a href="https://tagul.com/" target="_blank"><img src="images/Tagul.png" width="100px;" height="50px;" /></a>
+							<a href="http://www.dynatable.com/" target="_blank"><img src="images/dynatable_logo.jpg" width="100px;" height="50px;" /></a>
 						</p>
 					</div>
 				</div>

@@ -30,6 +30,67 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	private String albumList;
 	private String albumId;
 	private String songList;
+	private String songInfoList;
+	private String searchArtist;
+	private String albumInfoList;
+	private String crawlInfoList;
+
+	/**
+	 * @return the albumInfoList
+	 */
+	public String getAlbumInfoList() {
+		return albumInfoList;
+	}
+
+	/**
+	 * @param albumInfoList the albumInfoList to set
+	 */
+	public void setAlbumInfoList(String albumInfoList) {
+		this.albumInfoList = albumInfoList;
+	}
+
+	/**
+	 * @return the crawlInfoList
+	 */
+	public String getCrawlInfoList() {
+		return crawlInfoList;
+	}
+
+	/**
+	 * @param crawlInfoList the crawlInfoList to set
+	 */
+	public void setCrawlInfoList(String crawlInfoList) {
+		this.crawlInfoList = crawlInfoList;
+	}
+
+	/**
+	 * @return the searchArtist
+	 */
+	public String getSearchArtist() {
+		return searchArtist;
+	}
+
+	/**
+	 * @param searchArtist the searchArtist to set
+	 */
+	public void setSearchArtist(String searchArtist) {
+		this.searchArtist = searchArtist;
+	}
+
+	/**
+	 * @return the songInfoList
+	 */
+	public String getSongInfoList() {
+		return songInfoList;
+	}
+
+	/**
+	 * @param songInfoList
+	 *            the songInfoList to set
+	 */
+	public void setSongInfoList(String songInfoList) {
+		this.songInfoList = songInfoList;
+	}
 
 	public String getSongList() {
 		return songList;
@@ -123,16 +184,16 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 
 	public String loadArtistPage() {
 		String ret = SUCCESS;
-		//System.out.println(this.artistId);
+		// System.out.println(this.artistId);
 		return ret;
 	}
-	
-	public String underConstruction(){
+
+	public String underConstruction() {
 		String ret = SUCCESS;
-		//System.out.println(this.artistId);
+		// System.out.println(this.artistId);
 		return ret;
 	}
-	
+
 	public String loadArtistDetails() {
 		String ret = SUCCESS;
 		// System.out.println("something : " + this.artistId);
@@ -141,14 +202,13 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 					.parseInt(artistId));
 			// System.out.println(artistTO.getArtistName());
 			Gson gson = new Gson();
-			artistTO.setArtistDescription("abcdabcdabcd abcdbabcdbbc dnandasdna asdasjdansda ioasdalkds ioasdansdm a dioasdandsa daoisdakda, sdasdnaklnds");
 			this.artistDetails = gson.toJson(artistTO);
 			System.out.println(this.artistDetails);
 			Map<AlbumTO, List<SongTO>> albumsAll = new ArtistService()
 					.loadAlbums(Integer.parseInt(artistId));
 			Iterator<AlbumTO> iter = albumsAll.keySet().iterator();
 			this.albums = new ArrayList<AlbumTO>();
-			while(iter.hasNext()){
+			while (iter.hasNext()) {
 				this.albums.add(iter.next());
 			}
 			this.session.put("albums", albumsAll);
@@ -158,21 +218,50 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 		}
 		return ret;
 	}
-	
-	public String loadSongs(){
+
+	public String loadSongs() {
 		Map<AlbumTO, List<SongTO>> albums = new HashMap<AlbumTO, List<SongTO>>();
-		albums=(Map<AlbumTO, List<SongTO>>) this.session.get("albums");
+		albums = (Map<AlbumTO, List<SongTO>>) this.session.get("albums");
 		Iterator<AlbumTO> iter = albums.keySet().iterator();
 		List<SongTO> songs = new ArrayList<SongTO>();
 		AlbumTO temp;
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			temp = iter.next();
-			if(temp.getAlbumId()== Integer.parseInt(this.albumId)){
+			if (temp.getAlbumId() == Integer.parseInt(this.albumId)) {
 				songs = albums.get(temp);
 			}
 		}
 		Gson gson = new Gson();
-		this.songList = gson.toJson(songs); 
+		this.songList = gson.toJson(songs);
 		return SUCCESS;
 	}
+
+	public String loadSongInfo() {
+		List<SongTO> songs = new ArrayList<SongTO>();
+		Gson gson = new Gson();
+		try {
+			songs = new ArtistService().loadSongInfo(this.searchArtist);
+			this.songInfoList = gson.toJson(songs);
+			System.out.println(songInfoList);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}
+	
+	public String loadAlbumInfo() {
+		List<AlbumTO> albums = new ArrayList<AlbumTO>();
+		Gson gson = new Gson();
+		try {
+			albums = new ArtistService().loadAlbumInfo(this.searchArtist);
+			this.albumInfoList = gson.toJson(albums);
+			System.out.println(albumInfoList);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}
+	
 }

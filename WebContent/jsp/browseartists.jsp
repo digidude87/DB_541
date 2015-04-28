@@ -114,10 +114,27 @@
 					<!-- Nav Starts -->
 					<div class="navbar-collapse  collapse">
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="#home">Home</a></li>
-							<li><a href="#about">About</a></li>
-							<li><a href="#playlist">Contact Us</a></li>
-							<li><a href="#">Sign Up</a></li>
+							<%
+								if (session.getAttribute("artistName") == null) {
+							%>
+							<li><a href="loadAboutUs.action">About Us</a>
+							</li>
+							<li><a href="underconstruction.action">Sign Up</a>
+							</li>
+							<%
+								} else {
+							%>
+							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
+								out.write(session.getAttribute("artistName").toString());
+							%> </i> </a>
+							</li>
+							<li><a href="loadAboutUs.action">About Us</a>
+							</li>
+							<li><a href="logout.action">Sign out </a>
+							</li>
+							<%
+								}
+							%>
 						</ul>
 					</div>
 					<!-- #Nav Ends -->

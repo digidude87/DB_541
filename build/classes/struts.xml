@@ -65,5 +65,17 @@
 			method="loadHome">
 			<result name="success">/jsp/artistconsole.jsp</result>
 		</action>
+		<action name="loadAboutUs" class="com.main.BrowseArtistAction"
+			method="loadHome">
+			<result name="success">/jsp/aboutus.jsp</result>
+		</action>
+		<action name="loadSongInfo" class="com.main.ArtistAction"
+			method="loadSongInfo">
+			<result name="success" type="json">/jsp/artistconsole.jsp</result>
+		</action>
+		<action name="loadAlbumInfo" class="com.main.ArtistAction"
+			method="loadAlbumInfo">
+			<result name="success" type="json">/jsp/artistconsole.jsp</result>
+		</action>
 	</package>
 </struts>

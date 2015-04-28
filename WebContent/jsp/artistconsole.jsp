@@ -11,46 +11,100 @@
 <meta name="keywords" content="" />
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <%-- <script src="js/jquery.min.js"></script> --%>
-<%-- <script
-	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> --%>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="dynatable/jquery.dynatable.js"></script>
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="dynatable/jquery.dynatable.css" rel="stylesheet">
 
 <!-- Custom CSS -->
 <link href="css/artistopedia.css" rel="stylesheet">
-<link href="css/formstyle.css" rel="stylesheet">
+<!-- <link href="css/formstyle.css" rel="stylesheet"> -->
 <link href="css/leftmenu.css" rel="stylesheet">
 
 <script>
-	function loadResults() {
-		var json;
 
-		$.getJSON('getVal', {
-			searchText : searchField
+$(document).ready(function(){
+  $('li').click(function(){
+	  $(this).addClass('current')
+	       .siblings()
+	       .removeClass('current');
+	    
+	});
+});
+	
+function openModal() {
+	document.getElementById('modal').style.display = 'block';
+	document.getElementById('fade').style.display = 'block';
+}
+
+function closeModal() {
+	document.getElementById('modal').style.display = 'none';
+	document.getElementById('fade').style.display = 'none';
+}
+
+	var artist = '<%=session.getAttribute("artistName")%>';
+	var artistId = '<%=session.getAttribute("artistId")%>';
+	var albumStatDisp = "<table id=\"albumStatTable\" style=\"display: none; padding-top: 30px; padding-bottom: 20px;\">";
+	albumStatDisp += "<thead><th data-dynatable-column=\"albumName\">Name</th><th data-dynatable-column=\"albumCountry\">Country</th>";
+	albumStatDisp += "<th data-dynatable-column=\"albumLanguage\">Language</th><th data-dynatable-column=\"albumBarCode\">Bar Code</th>";
+	albumStatDisp += "</thead><tbody></tbody></table>";
+
+	var songStatDisp = "<table id=\"songStatTable\" style=\"display: none; padding-top: 30px; padding-bottom: 20px;\"><thead>";
+	songStatDisp += "<th data-dynatable-column=\"songName\">Name</th><th data-dynatable-column=\"youtubeName\">Youtube Name</th>";
+	songStatDisp += "<th data-dynatable-column=\"url\">Song Url</th><th data-dynatable-column=\"duration\">Duration</th>";
+	songStatDisp += "<th data-dynatable-column=\"releaseDate\">Release Date</th><th data-dynatable-column=\"songCountry\">Song Country</th>";
+	songStatDisp += "<th data-dynatable-column=\"songLanguage\">Language</th><th data-dynatable-column=\"rating\">Rating</th>";
+	songStatDisp += "<th data-dynatable-column=\"viewCount\">View Count</th><th data-dynatable-column=\"crawlDate\">Crawl Date</th>";
+	songStatDisp += "<th data-dynatable-column=\"viewCountRate\">View Count Rate</th><th data-dynatable-column=\"crawlDelta\">Crawl Delta</th>";
+	songStatDisp += "</thead><tbody></tbody></table>";
+
+	function loadAlbumStats() {
+		var json;
+		openModal();
+		$('#displayTab').hide();
+		$('#displayTab').empty();
+		$('#displayTab').append(albumStatDisp);
+		$.getJSON('loadAlbumInfo', {
+			searchArtist : artistId
 		}, function(jsonResponse) {
-			json = $.parseJSON(jsonResponse.fbString);
-			$(json).each(
-					function(i, val) {
-						d = "<div class='title'><a href='" + val.completeUrl
-								+ "' onmouseover='setSrc(\" " + val.imgUrl
-								+ " \")' target='_blank'>" + val.title
-								+ "</a></div>";
-						d += "<div>" + val.content + "</div>";
-						fb_results += d;
-						fb_results += "<br/>";
-						count++;
-					});
+			json = $.parseJSON(jsonResponse.albumInfoList);
+			$('#albumStatTable').dynatable({
+				dataset : {
+					records : json
+				}
+			});
+			$('#displayTab').show();
+			//document.getElementById('songStatTable').style.display = 'none';
+			document.getElementById('albumStatTable').style.display = 'block';
+			//document.getElementById('userMsg').style.display = 'none';
+			closeModal();
 		});
 	}
-	var artist = '<%= session.getAttribute("artistName") %>';
-	function loadAlbumStats(){
+
+	function loadSongStats() {
 		var json;
-		alert(artist);
-        alert(username );
-	/* 	$.getJSON('getVal', {
-			searchText : searchField
-		} */
+		openModal();
+		$('#displayTab').hide();
+		$('#displayTab').empty();
+		$('#displayTab').append(songStatDisp);
+		$.getJSON('loadSongInfo', {
+			searchArtist : artistId
+		}, function(jsonResponse) {
+			json = $.parseJSON(jsonResponse.songInfoList);
+			$('#songStatTable').dynatable({
+				dataset : {
+					records : json
+				}
+			});
+			$('#displayTab').show();
+			document.getElementById('songStatTable').style.display = 'block';
+			//document.getElementById('albumStatTable').style.display = 'none';
+			//document.getElementById('userMsg').style.display = 'none';
+			closeModal();
+		});
 	}
 </script>
 </head>
@@ -87,23 +141,19 @@
 					<!-- Nav Starts -->
 					<div class="navbar-collapse  collapse">
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="#home">Home</a></li>
-							<li><a href="#about">About</a></li>
-							<li><a href="#playlist">Contact Us</a></li>
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li><a href="underconstruction.action">Sign Up</a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a>
-							</li>
-							<li><a href="logout.action">Sign out </a>
-							</li>
+							%> </i> </a></li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="logout.action">Sign out </a></li>
 							<%
 								}
 							%>
@@ -133,24 +183,46 @@
 		<div class="row">
 			<div class="col-sm-2">
 				<div style="padding: 100px 0 10px 0">
-					<div class="dataContainer">
+					 <div class="dataContainer">
 						<!-- <h5 style="text-align: center;">Menu</h5>
 						<hr/> -->
+						<%-- <ul class="menu">
+							<li><a href="#" onclick="loadAlbumStats();" class="active"><span>Artist Bio</span></a>
+							</li>
+							<li><a href="#" onclick="loadAlbumStats();"><span>Album Stats</span></a>
+							</li>
+							<li><a href="#" onclick="loadSongStats();"><span>Song Stats</span></a>
+							</li>
+						</ul> --%>
 						<div id="menu8">
 							<ul>
-								<li><a href="#" onclick="loadAlbumStats()">Album Stats</a></li>
-								<li><a href="#3">Song Stats</a></li>
-								<li><a href="#4">Crawl History</a></li>
+								<li class="current"><a href="#" onclick="loadAlbumStats();">Artist Bio</a>
+								</li>
+								<li><a href="#" onclick="loadAlbumStats();">Album Stats</a>
+								</li>
+								<li><a href="#" onclick="loadSongStats();">Song Stats</a>
+								</li>
+								<!-- <li><a href="#4">Crawl History</a></li> -->
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-4 col-lg-10">
+			<div class="col-sm-2 col-lg-10">
 				<div style="padding: 100px 0 10px 0">
-					<div class="dataContainer" style="height: 450px;"></div>
+					<div class="tableContainer" id="displayTab">
+						<div id="userMsg">
+							<h5>Please select an option from menu to view the stats</h5>
+						</div>
+					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div id="content">
+		<div id="fade"></div>
+		<div id="modal">
+			<img id="loader" src="images/map_spinner.gif" />
 		</div>
 	</div>
 </body>

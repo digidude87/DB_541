@@ -25,4 +25,14 @@ public class ArtistService {
 		retAlbums = new ArtistDAO().loadAlbums(artistId);
 		return retAlbums;
 	}
+	
+	public List<SongTO> loadSongInfo(String artistId) throws SQLException, IOException {
+		List<SongTO> songs = new ArtistDAO().loadSongInfo(artistId);
+		return songs;
+	}
+
+	public List<AlbumTO> loadAlbumInfo(String artistId) throws SQLException, IOException {
+		List<AlbumTO> albums = new ArtistDAO().loadAlbumInfo(artistId);
+		return albums;
+	}
 }
