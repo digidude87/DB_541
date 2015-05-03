@@ -13,8 +13,10 @@ public class DBHandler {
 	public DBHandler() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://localhost:3306/database_project_db";
-			conn = DriverManager.getConnection(url, "root", "");
+			String host = "databassproject.crvb42hfos6o.us-west-2.rds.amazonaws.com";
+			String dbName = "Database_Project_DB";
+			String url = "jdbc:mysql://"+host+":3306/"+dbName;
+			conn = DriverManager.getConnection(url, "root", "Harshvardhan");
 			//System.out.println("conn built");
 		} catch (SQLException e) {
 			e.printStackTrace();

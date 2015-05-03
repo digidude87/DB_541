@@ -14,6 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="author" content="">
+<link rel="icon" type="image/gif" href="images/music.png">
 
 
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
@@ -54,7 +55,7 @@
 		$('#displayErr').css("display", "none");
 		var json;
 		var c = 0;
-		results = "<br>";
+		results = "";
 		var searchField = $("#loadArtists").val();
 		$.getJSON('loadSuggestions', {
 			searchText : searchField
@@ -163,6 +164,8 @@
 								<li id="location"><a href="loadartistbrowserlocation.action">Location</a>
 								</li>
 								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a>
+								</li> 
+								<li id="top"><a href="loadartistbrowsertop.action">Top 20</a>
 								</li> 
 							</ul>
 						</nav>

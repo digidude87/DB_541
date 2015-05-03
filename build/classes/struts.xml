@@ -26,8 +26,20 @@
 			method="loadSuggestions">
 			<result name="success" type="json">/jsp/browseartists.jsp</result>
 		</action>
+		<action name="loadTopArtists" class="com.main.BrowseArtistAction"
+			method="loadTopArtists">
+			<result name="success" type="json">/jsp/browsetopartists.jsp</result>
+		</action>
 		<action name="loadSuggestionsLocation" class="com.main.BrowseArtistAction"
 			method="loadSuggestionsLocation">
+			<result name="success" type="json">/jsp/browseartists.jsp</result>
+		</action>
+		<action name="loadSubgenres" class="com.main.BrowseArtistAction"
+			method="loadSubgenres">
+			<result name="success" type="json">/jsp/browseartists.jsp</result>
+		</action>
+		<action name="loadSuggestionsGenre" class="com.main.BrowseArtistAction"
+			method="loadSuggestionsGenre">
 			<result name="success" type="json">/jsp/browseartists.jsp</result>
 		</action>
 		<action name="loadartistPage" class="com.main.ArtistAction"
@@ -69,12 +81,20 @@
 			method="loadHome">
 			<result name="success">/jsp/aboutus.jsp</result>
 		</action>
+		<action name="loadartistbrowsertop" class="com.main.BrowseArtistAction"
+			method="loadHome">
+			<result name="success">/jsp/browsetopartists.jsp</result>
+		</action>
 		<action name="loadSongInfo" class="com.main.ArtistAction"
 			method="loadSongInfo">
 			<result name="success" type="json">/jsp/artistconsole.jsp</result>
 		</action>
 		<action name="loadAlbumInfo" class="com.main.ArtistAction"
 			method="loadAlbumInfo">
+			<result name="success" type="json">/jsp/artistconsole.jsp</result>
+		</action>
+		<action name="loadArtistBio" class="com.main.ArtistAction"
+			method="loadArtistBio">
 			<result name="success" type="json">/jsp/artistconsole.jsp</result>
 		</action>
 	</package>

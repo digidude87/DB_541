@@ -9,6 +9,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
+<link rel="icon" type="image/gif" href="images/music.png">
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <%-- <script src="js/jquery.min.js"></script> --%>
 <script
@@ -27,6 +28,7 @@
 <script>
 
 $(document).ready(function(){
+  loadArtistBio();
   $('li').click(function(){
 	  $(this).addClass('current')
 	       .siblings()
@@ -60,6 +62,8 @@ function closeModal() {
 	songStatDisp += "<th data-dynatable-column=\"viewCount\">View Count</th><th data-dynatable-column=\"crawlDate\">Crawl Date</th>";
 	songStatDisp += "<th data-dynatable-column=\"viewCountRate\">View Count Rate</th><th data-dynatable-column=\"crawlDelta\">Crawl Delta</th>";
 	songStatDisp += "</thead><tbody></tbody></table>";
+	
+	var artistDisp = "<div id=\"artistBio\"><h4 style=\"text-align : center\">ARTIST STATS</h4><hr></div>";
 
 	function loadAlbumStats() {
 		var json;
@@ -83,7 +87,34 @@ function closeModal() {
 			closeModal();
 		});
 	}
-
+	
+	function loadArtistBio() {
+		var json;
+		openModal();
+		$('#displayTab').hide();
+		$('#displayTab').empty();
+		$('#displayTab').append(artistDisp);
+		$.getJSON('loadArtistBio', {
+			searchArtist : artistId
+		}, function(jsonResponse) {
+			json = $.parseJSON(jsonResponse.artistBio);
+			$(json).each(
+					function(i, val) {
+						d="<h5><b>NAME : </b>"+val.artistName+"</h5><br>";
+						d+="<h5><b>ARTIST ALIAS(es) : </b>"+val.artistAlias+"</h5><br>";
+						d+="<h5><b>RECENT POPULARITY : </b>"+val.artistPopularityRecent+"</h5><br>";
+						d+="<h5><b>MAXIMUM RECENT POPULARITY : </b>"+val.maxRecent+"</h5><br>";
+						d+="<h5><b>OVERALL POPULARITY : </b>"+val.artistPopularityAll+"</h5><br>";
+						d+="<h5><b>MAXIMUM OVERALL POPULARITY : </b>"+val.maxAll+"</h5><br>";
+					});
+			$('#artistBio').append(d);
+			$('#displayTab').show();
+			//document.getElementById('songStatTable').style.display = 'none';
+			//document.getElementById('userMsg').style.display = 'none';
+			closeModal();
+		});
+	}
+	
 	function loadSongStats() {
 		var json;
 		openModal();
@@ -196,7 +227,7 @@ function closeModal() {
 						</ul> --%>
 						<div id="menu8">
 							<ul>
-								<li class="current"><a href="#" onclick="loadAlbumStats();">Artist Bio</a>
+								<li class="current"><a href="#" onclick="loadArtistBio();">Artist Stats</a>
 								</li>
 								<li><a href="#" onclick="loadAlbumStats();">Album Stats</a>
 								</li>
@@ -211,9 +242,6 @@ function closeModal() {
 			<div class="col-sm-2 col-lg-10">
 				<div style="padding: 100px 0 10px 0">
 					<div class="tableContainer" id="displayTab">
-						<div id="userMsg">
-							<h5>Please select an option from menu to view the stats</h5>
-						</div>
 					</div>
 				</div>
 			</div>

@@ -9,6 +9,53 @@ public class ArtistTO {
 	private Integer artistPopularityRecent;
 	private List<AlbumTO> albums;
 	private String artistDescription;
+	private String artistAlias;
+	private String maxRecent;
+	private String maxAll;
+	
+	
+
+	/**
+	 * @return the maxRecent
+	 */
+	public String getMaxRecent() {
+		return maxRecent;
+	}
+
+	/**
+	 * @param maxRecent the maxRecent to set
+	 */
+	public void setMaxRecent(String maxRecent) {
+		this.maxRecent = maxRecent;
+	}
+
+	/**
+	 * @return the maxAll
+	 */
+	public String getMaxAll() {
+		return maxAll;
+	}
+
+	/**
+	 * @param maxAll the maxAll to set
+	 */
+	public void setMaxAll(String maxAll) {
+		this.maxAll = maxAll;
+	}
+
+	/**
+	 * @return the artistAlias
+	 */
+	public String getArtistAlias() {
+		return artistAlias;
+	}
+
+	/**
+	 * @param artistAlias the artistAlias to set
+	 */
+	public void setArtistAlias(String artistAlias) {
+		this.artistAlias = artistAlias;
+	}
 
 	public String getArtistDescription() {
 		return artistDescription;

@@ -9,6 +9,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
+<link rel="icon" type="image/gif" href="images/music.png">
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <script
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

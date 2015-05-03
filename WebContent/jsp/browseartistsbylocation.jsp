@@ -14,6 +14,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link rel="icon" type="image/gif" href="images/music.png">
 
 
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
@@ -44,7 +45,7 @@
 		$('#displayErr').css("display", "none");
 		var json;
 		var c = 0;
-		results = "<br>"; 
+		results = ""; 
 		// infoWindow.setContent(layerEvt.infoWindowHtml);
 		// infoWindow.setPosition(layerEvt.latLng);
 		if (layerEvt.row) {
@@ -207,6 +208,8 @@
 								<li id="location"><a href="loadartistbrowserlocation.action">Location</a>
 								</li>
 								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a></li>
+								<li id="top"><a href="loadartistbrowsertop.action">Top 20</a>
+								</li>
 							</ul>
 						</nav>
 					</div>

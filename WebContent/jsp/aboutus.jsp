@@ -9,6 +9,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
+<link rel="icon" type="image/gif" href="images/music.png">
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <script
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -208,16 +209,21 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li class="active"><a href="#">About Us</a></li>
-							<li><a href="underconstruction.action">Sign Up</a></li>
+							<li class="active"><a href="#">About Us</a>
+							</li>
+							<li><a href="underconstruction.action">Sign Up</a>
+							</li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a></li>
-							<li class="active"><a href="#">About Us</a></li>
-							<li><a href="logout.action">Sign out</a></li>
+							%> </i> </a>
+							</li>
+							<li class="active"><a href="#">About Us</a>
+							</li>
+							<li><a href="logout.action">Sign out</a>
+							</li>
 							<%
 								}
 							%>
@@ -286,12 +292,14 @@
 							</h3>
 
 							<div id="details" style="height: 60%">
-								<blockquote></blockquote>
+								<blockquote>Harsh likes to read novels in his spare
+									time. Also he is a foodie and loves to experience different
+									cuisines. Prior to joining Rutgers, he worked with Temenos on
+									database systems for 2 years.</blockquote>
 							</div>
 							<div id="details" style="height: 15%">
-								<a href="" target="_blank"><img src="images/fbico.png"
-									width="50px" height="50px" /> </a> <a href="" target="_blank"><img
-									src="images/lin-ico.png" width="40px" height="40px" /> </a>
+								<a href="https://www.facebook.com/harshvrdhnsingh" target="_blank"><img src="images/fbico.png"
+									width="50px" height="50px" /> </a>
 							</div>
 						</div>
 					</div>

@@ -34,6 +34,38 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	private String searchArtist;
 	private String albumInfoList;
 	private String crawlInfoList;
+	private String artistBio;
+	private String albumName;
+
+	/**
+	 * @return the albumName
+	 */
+	public String getAlbumName() {
+		return albumName;
+	}
+
+	/**
+	 * @param albumName
+	 *            the albumName to set
+	 */
+	public void setAlbumName(String albumName) {
+		this.albumName = albumName;
+	}
+
+	/**
+	 * @return the artistBio
+	 */
+	public String getArtistBio() {
+		return artistBio;
+	}
+
+	/**
+	 * @param artistBio
+	 *            the artistBio to set
+	 */
+	public void setArtistBio(String artistBio) {
+		this.artistBio = artistBio;
+	}
 
 	/**
 	 * @return the albumInfoList
@@ -43,7 +75,8 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	/**
-	 * @param albumInfoList the albumInfoList to set
+	 * @param albumInfoList
+	 *            the albumInfoList to set
 	 */
 	public void setAlbumInfoList(String albumInfoList) {
 		this.albumInfoList = albumInfoList;
@@ -57,7 +90,8 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	/**
-	 * @param crawlInfoList the crawlInfoList to set
+	 * @param crawlInfoList
+	 *            the crawlInfoList to set
 	 */
 	public void setCrawlInfoList(String crawlInfoList) {
 		this.crawlInfoList = crawlInfoList;
@@ -71,7 +105,8 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	/**
-	 * @param searchArtist the searchArtist to set
+	 * @param searchArtist
+	 *            the searchArtist to set
 	 */
 	public void setSearchArtist(String searchArtist) {
 		this.searchArtist = searchArtist;
@@ -203,15 +238,16 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 			// System.out.println(artistTO.getArtistName());
 			Gson gson = new Gson();
 			this.artistDetails = gson.toJson(artistTO);
-			System.out.println(this.artistDetails);
-			Map<AlbumTO, List<SongTO>> albumsAll = new ArtistService()
-					.loadAlbums(Integer.parseInt(artistId));
-			Iterator<AlbumTO> iter = albumsAll.keySet().iterator();
-			this.albums = new ArrayList<AlbumTO>();
-			while (iter.hasNext()) {
-				this.albums.add(iter.next());
-			}
-			this.session.put("albums", albumsAll);
+			//System.out.println(this.artistDetails);
+			/*
+			 * Map<AlbumTO, List<SongTO>> albumsAll = new ArtistService()
+			 * .loadAlbums(Integer.parseInt(artistId)); Iterator<AlbumTO> iter =
+			 * albumsAll.keySet().iterator(); this.albums = new
+			 * ArrayList<AlbumTO>(); while (iter.hasNext()) {
+			 * this.albums.add(iter.next()); } this.session.put("albums",
+			 * albumsAll);
+			 */
+			albums = new ArtistService().loadAlbums(Integer.parseInt(artistId));
 			this.albumList = gson.toJson(albums);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,16 +256,18 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	public String loadSongs() {
-		Map<AlbumTO, List<SongTO>> albums = new HashMap<AlbumTO, List<SongTO>>();
-		albums = (Map<AlbumTO, List<SongTO>>) this.session.get("albums");
-		Iterator<AlbumTO> iter = albums.keySet().iterator();
+		/*
+		 * Map<AlbumTO, List<SongTO>> albums = new HashMap<AlbumTO,
+		 * List<SongTO>>(); albums = (Map<AlbumTO, List<SongTO>>)
+		 * this.session.get("albums"); Iterator<AlbumTO> iter =
+		 * albums.keySet().iterator();
+		 */
+		//System.out.println("ArtistId : "+artistId);
 		List<SongTO> songs = new ArrayList<SongTO>();
-		AlbumTO temp;
-		while (iter.hasNext()) {
-			temp = iter.next();
-			if (temp.getAlbumId() == Integer.parseInt(this.albumId)) {
-				songs = albums.get(temp);
-			}
+		try {
+			songs = new ArtistService().loadSongList(this.albumName, this.artistId);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		Gson gson = new Gson();
 		this.songList = gson.toJson(songs);
@@ -242,26 +280,52 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 		try {
 			songs = new ArtistService().loadSongInfo(this.searchArtist);
 			this.songInfoList = gson.toJson(songs);
-			System.out.println(songInfoList);
+			//System.out.println(songInfoList);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return SUCCESS;
 	}
-	
+
 	public String loadAlbumInfo() {
 		List<AlbumTO> albums = new ArrayList<AlbumTO>();
 		Gson gson = new Gson();
 		try {
 			albums = new ArtistService().loadAlbumInfo(this.searchArtist);
 			this.albumInfoList = gson.toJson(albums);
-			System.out.println(albumInfoList);
+			//System.out.println(albumInfoList);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return SUCCESS;
 	}
-	
+
+	public String loadArtistBio() {
+		List<ArtistTO> artists = new ArrayList<ArtistTO>();
+		ArtistTO artist = new ArtistTO();
+		Gson gson = new Gson();
+		StringBuffer artistAlias = new StringBuffer();
+		try {
+			artists = new ArtistService().loadArtistBio(this.searchArtist);
+			artist = artists.get(0);
+			Iterator<ArtistTO> iter = artists.iterator();
+			while (iter.hasNext()) {
+				artistAlias.append(iter.next().getArtistAlias());
+				if (iter.hasNext()) {
+					artistAlias.append(", ");
+				}
+			}
+			artist.setArtistAlias(artistAlias.toString());
+			artist = new ArtistService().fetchMaxPopularity(artist);
+			this.artistBio = gson.toJson(artist);
+			//System.out.println(artistBio);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}
+
 }

@@ -9,7 +9,6 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
-<link rel="icon" type="image/gif" href="images/music.png">
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <script
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -77,14 +76,16 @@
 										function(jsonResponse) {
 											json = $
 													.parseJSON(jsonResponse.artistDetails);
-											n = "<span class='glyphicon glyphicon-user'></span> ";
-											$(json).each(function(i, val) {
-												n += val.artistName;
-												/* d = "<div>"
-														+ val.artistDescription
-														+ "</div>"; */
-												artistName = val.artistName;
-											});
+											n="<span class='glyphicon glyphicon-user'></span> ";
+											$(json)
+													.each(
+															function(i, val) {
+																n += val.artistName;
+																/* d = "<div>"
+																		+ val.artistDescription
+																		+ "</div>"; */
+																artistName = val.artistName;
+															});
 											$("#artistName").append(n);
 											/* $("#details").append(d); */
 
@@ -97,19 +98,16 @@
 															function(i, val) {
 																d = "<div>";
 																d += "<a href='#' onclick='show(\""
-																		+ val.albumName
-																		+ val.albumCountry
+																		+ val.albumId
 																		+ "\")'><img src='images/icon_filterexpand.gif'/></a>   ";
 																d += "<a href='#' onclick='loadSongs(\""
 																		+ val.albumId
 																		+ "\",\""
 																		+ artistName
-																		+ "\",\""
-																		+ val.albumName
 																		+ "\")'>"
 																		+ val.albumName
 																		+ "</a>";
-																d += "<br><div id='"+val.albumName+val.albumCountry+"' style='display:none'>";
+																d += "<br><div id='"+val.albumId+"' style='display:none'>";
 																d += "<div class='sub_res'>Country : "
 																		+ val.albumCountry
 																		+ "<br>"
@@ -240,55 +238,49 @@
 		});
 	}
 
-	function loadSongs(albId, artistName, albumName) {
+	function loadSongs(albId, artistName) {
 		var json;
 		$("#displaySongs").empty();
-
 		openModal();
 		$
 				.getJSON(
 						'loadSongs',
 						{
-							albumName : albumName
+							albumId : albId
 						},
 						function(jsonResponse) {
 							results = "";
 							json = $.parseJSON(jsonResponse.songList);
-							if (Object.keys(json).length>0) {
-								$(json)
-										.each(
-												function(i, val) {
-													results += "<div>"
-															+ val.songName
-															+ "</div>";
+							$(json)
+									.each(
+											function(i, val) {
+												results += "<div>"
+														+ val.songName
+														+ "</div>";
+												results += "<div style='float:right; display: inline;'/><a class='fancybox fancybox.iframe' href='"
+														+ val.url
+														+ "' onclick='showfade();'><img src='images/youtube.png'/></a>&nbsp;";
+												crawlSpotify(val.songName + " "
+														+ artistName);
+												if (loadFlag != 2) {
+													while (loadFlag != 1)
+														;
+												}
+												if (spotifyUri != null
+														&& spotifyUri != "") {
+													var url = "https://embed.spotify.com/?uri="
+															+ spotifyUri;
 													results += "<div style='float:right; display: inline;'/><a class='fancybox fancybox.iframe' href='"
-															+ val.url
-															+ "' onclick='showfade();'><img src='images/youtube.png'/></a>&nbsp;";
-													crawlSpotify(val.songName
-															+ " " + artistName);
-													if (loadFlag != 2) {
-														while (loadFlag != 1)
-															;
-													}
-													if (spotifyUri != null
-															&& spotifyUri != "") {
-														var url = "https://embed.spotify.com/?uri="
-																+ spotifyUri;
-														results += "<div style='float:right; display: inline;'/><a class='fancybox fancybox.iframe' href='"
 															+ url
 															+ "' ><img src='images/spotify.png' height='32px' width='32px'/></a>&nbsp;";
-													}
-													results += "</div><hr>";
-												});
-								$("#displaySongs").append(results);
-								if (loadFlag != 0) {
-									closeModal();
-									loadFlag = 0;
-									spotifyUri = "";
-								}
-							} else {
-								$("#displaySongs").append("<div>Songs not available in database</div><hr>");
+												}
+												results += "</div><hr>";
+											});
+							$("#displaySongs").append(results);
+							if (loadFlag != 0) {
 								closeModal();
+								loadFlag = 0;
+								spotifyUri = "";
 							}
 						});
 	}
@@ -316,21 +308,16 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li><a href="loadAboutUs.action">About Us</a>
-							</li>
-							<li><a href="underconstruction.action">Sign Up</a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a>
-							</li>
-							<li><a href="loadAboutUs.action">About Us</a>
-							</li>
-							<li><a href="logout.action">Sign out </a>
-							</li>
+							%> </i> </a></li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="logout.action">Sign out </a></li>
 							<%
 								}
 							%>
@@ -363,7 +350,8 @@
 					</div>
 					<div class="col-lg-8 col-sm-8  col-xs-12">
 						<div class="dataContainer" style="height: 320px;">
-							<h3 id="artistName"></h3>
+							<h3 id="artistName">
+							</h3>
 							<blockquote>
 								<div id="details"></div>
 							</blockquote>

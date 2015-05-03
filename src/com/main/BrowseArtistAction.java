@@ -12,6 +12,7 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import com.Service.BrowseArtistService;
 import com.TO.SearchArtistTO;
+import com.TO.SubGenreTO;
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -28,6 +29,70 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 	private Map<Integer, String> artistSuggestion;
 	Map<String, Object> session;
 	private String country;
+	private String genre;
+	private String topListRecent = "";
+	private String topListAll = "";
+	private String subGenresList = "";
+
+	/**
+	 * @return the subGenresList
+	 */
+	public String getSubGenresList() {
+		return subGenresList;
+	}
+
+	/**
+	 * @param subGenresList the subGenresList to set
+	 */
+	public void setSubGenresList(String subGenresList) {
+		this.subGenresList = subGenresList;
+	}
+
+
+	/**
+	 * @return the genre
+	 */
+	public String getGenre() {
+		return genre;
+	}
+
+	/**
+	 * @param genre the genre to set
+	 */
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+
+	/**
+	 * @return the topListRecent
+	 */
+	public String getTopListRecent() {
+		return topListRecent;
+	}
+
+	/**
+	 * @param topListRecent
+	 *            the topListRecent to set
+	 */
+	public void setTopListRecent(String topListRecent) {
+		this.topListRecent = topListRecent;
+	}
+
+	/**
+	 * @return the topListAll
+	 */
+	public String getTopListAll() {
+		return topListAll;
+	}
+
+	/**
+	 * @param topListAll
+	 *            the topListAll to set
+	 */
+	public void setTopListAll(String topListAll) {
+		this.topListAll = topListAll;
+	}
 
 	/**
 	 * @return the country
@@ -175,11 +240,43 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 
 	public String loadSuggestionsLocation() {
 		String ret = SUCCESS;
-		System.out.println(country);
+		//System.out.println(country);
 		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
 		Map<Integer, String> retMap = new HashMap<Integer, String>();
 		try {
-			retMap = new BrowseArtistService().loadArtistsLocation(this.country);
+			retMap = new BrowseArtistService()
+					.loadArtistsLocation(this.country);
+			Iterator<Integer> iter = retMap.keySet().iterator();
+			SearchArtistTO temp;
+			int artistid;
+			while (iter.hasNext()) {
+				temp = new SearchArtistTO();
+				artistid = iter.next();
+				temp.setArtistId(artistid);
+				temp.setArtistName(retMap.get(artistid));
+				suggestions.add(temp);
+			}
+		} catch (SQLException sq) {
+			System.out.println("SqlException Occured");
+		} catch (IOException io) {
+			System.out.println("IOException Occured");
+		} catch (Exception e) {
+			System.out.println("Exception Occured");
+		}
+		Gson gson = new Gson();
+		this.suggestionList = gson.toJson(suggestions);
+		// System.out.println(suggestionList.toString());
+		return ret;
+	}
+	
+	public String loadSuggestionsGenre() {
+		String ret = SUCCESS;
+		//System.out.println(country);
+		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
+		Map<Integer, String> retMap = new HashMap<Integer, String>();
+		try {
+			retMap = new BrowseArtistService()
+					.loadArtistsGenre(this.genre);
 			Iterator<Integer> iter = retMap.keySet().iterator();
 			SearchArtistTO temp;
 			int artistid;
@@ -240,4 +337,61 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		String ret = SUCCESS;
 		return ret;
 	}
+
+	public String loadTopArtists() {
+		String ret = SUCCESS;
+		List<SearchArtistTO> recentTop = new ArrayList<SearchArtistTO>();
+		List<SearchArtistTO> overAllTop = new ArrayList<SearchArtistTO>();
+		Map<Integer, String> retMap = new HashMap<Integer, String>();
+		try {
+			retMap = new BrowseArtistService()
+					.loadRecentTopArtists();
+			Iterator<Integer> iter = retMap.keySet().iterator();
+			SearchArtistTO temp;
+			int artistid;
+			while (iter.hasNext()) {
+				temp = new SearchArtistTO();
+				artistid = iter.next();
+				temp.setArtistId(artistid);
+				temp.setArtistName(retMap.get(artistid));
+				recentTop.add(temp);
+			}
+
+			retMap = new HashMap<Integer, String>();
+			retMap = new BrowseArtistService()
+					.loadOverAllTopArtists();
+			iter = retMap.keySet().iterator();
+			while (iter.hasNext()) {
+				temp = new SearchArtistTO();
+				artistid = iter.next();
+				temp.setArtistId(artistid);
+				temp.setArtistName(retMap.get(artistid));
+				overAllTop.add(temp);
+			}
+		} catch (SQLException sq) {
+			System.out.println("SqlException Occured");
+		} catch (IOException io) {
+			System.out.println("IOException Occured");
+		} catch (Exception e) {
+			System.out.println("Exception Occured");
+		}
+		Gson gson = new Gson();
+		this.topListRecent = gson.toJson(recentTop);
+		this.topListAll = gson.toJson(overAllTop);
+		// System.out.println(suggestionList.toString());
+		return ret;
+	}
+	
+	public String loadSubgenres(){
+		List<SubGenreTO> subgenres = new ArrayList<SubGenreTO>();
+		try {
+			subgenres = new BrowseArtistService().loadSubGenres(genre);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Gson gson = new Gson();
+		this.subGenresList = gson.toJson(subgenres);
+		return SUCCESS;
+	}
+
 }
