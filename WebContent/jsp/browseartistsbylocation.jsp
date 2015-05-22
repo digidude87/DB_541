@@ -32,12 +32,22 @@
 <script type="text/javascript"
 	src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		//alert(localStorage['visited']);
+		if (localStorage['visited']) {
+			//alert("in");
+			document.getElementById('visited').style.display = 'block';
+		} else {
+			//alert("2");
+			document.getElementById('visited').style.display = 'none';
+		}
+	});
 	var kmlLayer = null;
 	var map = null;
 	var infoWindow = new google.maps.InfoWindow(); // InfoWindow
 
 	function openIW(layerEvt) {
-		var content="";
+		var content = "";
 		openModal();
 		$("#displayTxt").empty();
 		$("#displayErr").empty();
@@ -45,7 +55,7 @@
 		$('#displayErr').css("display", "none");
 		var json;
 		var c = 0;
-		results = ""; 
+		results = "";
 		// infoWindow.setContent(layerEvt.infoWindowHtml);
 		// infoWindow.setPosition(layerEvt.latLng);
 		if (layerEvt.row) {
@@ -53,35 +63,45 @@
 		} else if (layerEvt.featureData) {
 			content = layerEvt.featureData.name;
 		}
-		
-		$.getJSON('loadSuggestionsLocation', {
-			country : content
-		}, function(jsonResponse) {
-			json = $.parseJSON(jsonResponse.suggestionList);
-			$(json).each(
-					function(i, val) {
-						/* d = "<div class='title'><a href='" + val.completeUrl
-						+ " \")' target='_blank'>" + val.artistName
-						+ "</a></div>"; */
-						d = "<div><a href='loadartistPage.action?artistId="
-								+ val.artistId + " '>" + val.artistName
-								+ "</a></div>";
-						results += d;
-						results += "<hr>";
-						c++;
-					});
-			if (c > 0) {
-				$('#displayTxt').css("display", "block");
-				$("#displayTxt").append("<h5> Search Results for \'"+content+"\'</h5><hr>");
-				$("#displayTxt").append(results);
-			} else {
-				$('#displayErr').css("display", "block");
-				$("#displayErr").append(
-						"<div class='results'>No records returned</div>");
-			}
-			closeModal();
-		});
-		
+
+		$
+				.getJSON(
+						'loadSuggestionsLocation',
+						{
+							country : content
+						},
+						function(jsonResponse) {
+							json = $.parseJSON(jsonResponse.suggestionList);
+							$(json)
+									.each(
+											function(i, val) {
+												/* d = "<div class='title'><a href='" + val.completeUrl
+												+ " \")' target='_blank'>" + val.artistName
+												+ "</a></div>"; */
+												d = "<div><a href='loadartistPage.action?artistId="
+														+ val.artistId
+														+ " '>"
+														+ val.artistName
+														+ "</a></div>";
+												results += d;
+												results += "<hr>";
+												c++;
+											});
+							if (c > 0) {
+								$('#displayTxt').css("display", "block");
+								$("#displayTxt").append(
+										"<h5> Search Results for \'" + content
+												+ "\'</h5><hr>");
+								$("#displayTxt").append(results);
+							} else {
+								$('#displayErr').css("display", "block");
+								$("#displayErr")
+										.append(
+												"<div class='results'>No records returned</div>");
+							}
+							closeModal();
+						});
+
 	}
 
 	function initialize() {
@@ -110,7 +130,7 @@
 		google.maps.event.addListener(kmlLayer, 'click', openIW);
 
 	}
-	
+
 	var results;
 	function checkKey(e, textarea) {
 		var code = (e.keyCode ? e.keyCode : e.which);
@@ -138,7 +158,7 @@
 </script>
 </head>
 
-<body onload="initialize()">
+<body onload="initialize();">
 	<form id="noform"></form>
 	<div id="bg">
 		<img src="images/back1.jpg" alt="">
@@ -163,21 +183,22 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li><a href="loadAboutUs.action">About Us</a>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li><a href="underconstruction.action">Sign Up</a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a>
+							%> </i> </a></li>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li><a href="loadAboutUs.action">About Us</a>
-							</li>
-							<li><a href="logout.action">Sign out </a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="logout.action">Sign out </a></li>
 							<%
 								}
 							%>
@@ -204,12 +225,14 @@
 					<div class="col-lg-12">
 						<nav>
 							<ul class="fancyNav">
-								<li id="name"><a href="loadartistbrowser.action">Name    </a></li>
-								<li id="location"><a href="loadartistbrowserlocation.action">Location</a>
+								<li id="name"><a href="loadartistbrowser.action">Name </a>
 								</li>
-								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a></li>
-								<li id="top"><a href="loadartistbrowsertop.action">Top 20</a>
+								<li id="location"><a
+									href="loadartistbrowserlocation.action">Location</a></li>
+								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a>
 								</li>
+								<li id="top"><a href="loadartistbrowsertop.action">Top
+										20</a></li>
 							</ul>
 						</nav>
 					</div>

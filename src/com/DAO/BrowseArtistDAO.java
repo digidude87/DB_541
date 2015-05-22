@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.TO.GenreTO;
+import com.TO.SearchArtistTO;
 import com.TO.SubGenreTO;
 
 import database.DBHandler;
@@ -17,16 +18,107 @@ import database.DBHandler;
 public class BrowseArtistDAO {
 	public static DBHandler db = new DBHandler();
 
-	public Map<Integer, String> loadArtists(String text) throws SQLException,
-			IOException {
-		Map<Integer, String> retMap = new HashMap<Integer, String>();
-		String sql = "select distinct artistId, artistName from Artists where artistName like '%"
-				+ text + "%'";
+	public List<SearchArtistTO> loadArtists(String text)
+			throws SQLException, IOException {
+		//List<Map<Integer, String>> retList = new ArrayList<Map<Integer, String>>();
+		Map<Integer, String> primaryMap = new HashMap<Integer, String>();
+		Map<Integer, String> secondMap = new HashMap<Integer, String>();
+		/*Map<Integer, String> tertMap = new HashMap<Integer, String>();*/
+		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
+		List<Integer> visitedIds = new ArrayList<Integer>();
+		String sql = "select distinct artistId, artistName from Artists where artistName ='"
+				+ text + "' limit 1";
 		ResultSet rs = db.runSql(sql);
+		SearchArtistTO temp;
+		int exactId = 0;
 		while (rs.next()) {
-			retMap.put(rs.getInt("artistId"), rs.getString("artistName"));
+			temp = new SearchArtistTO();
+			exactId = rs.getInt("artistId");
+			temp.setArtistId(exactId);
+			temp.setArtistName(rs.getString("artistName"));
+			suggestions.add(temp);
+			visitedIds.add(exactId);
+			//primaryMap.put(rs.getInt("artistId"), rs.getString("artistName"));
 		}
-		return retMap;
+		sql = "select distinct artistId, artistName from Artists where artistName like '%"
+				+ text + "%' and artistName != '"+text+"'order by artistPopularityAll desc";
+		rs = db.runSql(sql);
+		int id;
+		while (rs.next()) {
+			id=rs.getInt("artistId");
+			temp = new SearchArtistTO();
+			if(id != exactId){
+				temp.setArtistId(id);
+				temp.setArtistName(rs.getString("artistName"));
+				suggestions.add(temp);
+				secondMap.put(id, rs.getString("artistName"));
+				visitedIds.add(id);
+			}
+		}
+		sql="select distinct * from ArtistAlias where artistAlias='"+text+"'";
+		rs = db.runSql(sql);
+		while (rs.next()) {
+			id=rs.getInt("artistId");
+			temp = new SearchArtistTO();
+			temp.setArtistId(id);
+			temp.setArtistName(rs.getString("artistAlias"));
+			if(exactId!=0 && exactId != id){
+				suggestions.add(1,temp);
+			}else if(exactId == 0){
+				suggestions.add(0,temp);
+			}
+		}
+		sql="select distinct * from ArtistAlias where artistAlias like '%"+text+"%'";
+		rs = db.runSql(sql);
+		/*int i=0;
+		int removeId = 0;*/
+		while (rs.next()) {
+			id=rs.getInt("artistId");
+			temp = new SearchArtistTO();
+			if(exactId != id && !visitedIds.contains(id)){
+				temp.setArtistId(id);
+				temp.setArtistName(rs.getString("artistAlias"));
+				suggestions.add(temp);
+				visitedIds.add(id);
+			} 
+			/*else if (visitedIds.contains(id)){
+				i=0;
+				removeId = -1;
+				for(SearchArtistTO t:suggestions){
+					if(t.getArtistId() == id){
+						removeId = i;
+						temp.setArtistId(id);
+						temp.setArtistName(t.getArtistName());
+						if(t.getArtistAlias()!=null){
+							temp.setArtistAlias(t.getArtistAlias()+", "+rs.getString("artistAlias"));
+						}
+						//t.setArtistName(t.getArtistName()+", "+rs.getString("artistAlias"));
+						break;
+					}
+					i++;
+				}
+				if(removeId!=-1){
+					suggestions.remove(removeId);
+					suggestions.add(removeId,temp);
+				}
+			}*/
+		}
+		/*sql = "select distinct artistId, artistName from Artists where artistName like '%"
+				+ text + "' order by artistPopularityAll desc";
+		rs = db.runSql(sql);
+		while (rs.next()) {
+			id=rs.getInt("artistId");
+			temp = new SearchArtistTO();
+			if(!primaryMap.keySet().contains(id) && !secondMap.keySet().contains(id)){
+				temp.setArtistId(id);
+				temp.setArtistName(rs.getString("artistName"));
+				suggestions.add(temp);
+			}
+		}
+		retList.add(primaryMap);
+		retList.add(secondMap);
+		retList.add(tertMap);*/
+		return suggestions;
 	}
 
 	public Map<Integer, String> loadRecentTopArtists() throws SQLException,
@@ -55,8 +147,8 @@ public class BrowseArtistDAO {
 			throws SQLException, IOException {
 		Map<Integer, String> retMap = new HashMap<Integer, String>();
 		List<String> artistIds = new ArrayList<String>();
-		String sql = "select distinct artistId from Songs where songCountry = '"
-				+ country + "'";
+		String sql = "select artistId from Songs where songCountry = '"
+				+ country + "'  order by viewCount desc limit 100";
 		ResultSet rs = db.runSql(sql);
 		while (rs.next()) {
 			artistIds.add(rs.getString("artistId"));
@@ -71,7 +163,7 @@ public class BrowseArtistDAO {
 				if (iter.hasNext()) {
 					query.append(temp + ",");
 				} else {
-					query.append(temp + ")");
+					query.append(temp + ") order by artistPopularityAll desc");
 				}
 			}
 			rs = db.runSql(query.toString());
@@ -102,7 +194,7 @@ public class BrowseArtistDAO {
 				if (iter.hasNext()) {
 					query.append(temp + ",");
 				} else {
-					query.append(temp + ")");
+					query.append(temp + ") order by artistPopularityAll desc");
 				}
 			}
 			rs = db.runSql(query.toString());

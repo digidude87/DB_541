@@ -30,7 +30,16 @@
 <link href="css/formstyle.css" rel="stylesheet">
 <link href="css/tabmenu.css" rel="stylesheet">
 <script type="text/javascript">
-	
+	$(document).ready(function() {
+		//alert(localStorage['visited']);
+		if (localStorage['visited']) {
+			//alert("in");
+			document.getElementById('visited').style.display = 'block';
+		} else {
+			//alert("2");
+			document.getElementById('visited').style.display = 'none';
+		}
+	});
 	function loadSub(text) {
 		if (text == "HIP-HOP") {
 			text = "HIP HOP";
@@ -60,8 +69,8 @@
 						/* d = "<div class='title'><a href='" + val.completeUrl
 						+ " \")' target='_blank'>" + val.artistName
 						+ "</a></div>"; */
-						d = "<div><a href='#' onclick='loadArtist(\""+val.name+"\")'>"
-								+ val.name + "</a></div>";
+						d = "<div><a href='#' onclick='loadArtist(\""
+								+ val.name + "\")'>" + val.name + "</a></div>";
 						results += d;
 						results += "<hr>";
 					});
@@ -79,7 +88,8 @@
 		$("#displayErr").empty();
 		$('#displayTxt').css("display", "none");
 		$('#displayErr').css("display", "none");
-		results = "";
+		results = "<h5 style=\"text-align : center;\">Search results for Sub-Genre : "
+				+ genre + " </h5><hr/>";
 		c = 0;
 		$.getJSON('loadSuggestionsGenre', {
 			genre : genre
@@ -161,21 +171,22 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li><a href="loadAboutUs.action">About Us</a>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li><a href="underconstruction.action">Sign Up</a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a>
+							%> </i> </a></li>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li><a href="loadAboutUs.action">About Us</a>
-							</li>
-							<li><a href="logout.action">Sign out </a>
-							</li>
+							<li><a href="loadAboutUs.action">About Us</a></li>
+							<li><a href="logout.action">Sign out </a></li>
 							<%
 								}
 							%>
@@ -205,12 +216,12 @@
 								<li id="name"><a href="loadartistbrowser.action">Name </a>
 								</li>
 								<li id="location"><a
-									href="loadartistbrowserlocation.action">Location</a></li>
+									href="loadartistbrowserlocation.action">Location</a>
+								</li>
 								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a>
 								</li>
 								<li id="top"><a href="loadartistbrowsertop.action">Top
-										20</a>
-								</li>
+										20</a></li>
 							</ul>
 						</nav>
 					</div>

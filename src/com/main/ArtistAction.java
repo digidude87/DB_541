@@ -36,6 +36,36 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 	private String crawlInfoList;
 	private String artistBio;
 	private String albumName;
+	private String suggestedArtists;
+	private String topSongList;
+
+	/**
+	 * @return the topSongList
+	 */
+	public String getTopSongList() {
+		return topSongList;
+	}
+
+	/**
+	 * @param topSongList the topSongList to set
+	 */
+	public void setTopSongList(String topSongList) {
+		this.topSongList = topSongList;
+	}
+
+	/**
+	 * @return the suggestedArtists
+	 */
+	public String getSuggestedArtists() {
+		return suggestedArtists;
+	}
+
+	/**
+	 * @param suggestedArtists the suggestedArtists to set
+	 */
+	public void setSuggestedArtists(String suggestedArtists) {
+		this.suggestedArtists = suggestedArtists;
+	}
 
 	/**
 	 * @return the albumName
@@ -231,10 +261,12 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 
 	public String loadArtistDetails() {
 		String ret = SUCCESS;
+		List<SongTO> songs = new ArrayList<SongTO>();
 		// System.out.println("something : " + this.artistId);
 		try {
 			ArtistTO artistTO = new ArtistService().loadArtist(Integer
 					.parseInt(artistId));
+			songs = new ArtistService().loadTopSongList(artistId);
 			// System.out.println(artistTO.getArtistName());
 			Gson gson = new Gson();
 			this.artistDetails = gson.toJson(artistTO);
@@ -248,6 +280,7 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 			 * albumsAll);
 			 */
 			albums = new ArtistService().loadAlbums(Integer.parseInt(artistId));
+			this.topSongList = gson.toJson(songs);
 			this.albumList = gson.toJson(albums);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -323,6 +356,19 @@ public class ArtistAction extends ActionSupport implements SessionAware {
 			//System.out.println(artistBio);
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}
+	
+	public String loadSuggestedArtist(){
+		List<ArtistTO> suggestions = new ArrayList<ArtistTO>();
+		Gson gson = new Gson();
+		try {
+			suggestions = new ArtistService().suggestArtists(artistId);
+			this.suggestedArtists = gson.toJson(suggestions);
+			//System.out.println(suggestedArtists);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return SUCCESS;

@@ -42,6 +42,14 @@
 	$(document)
 			.ready(
 					function() {
+						//alert(localStorage['visited']);
+						if (localStorage['visited']) {
+							//alert("in");
+							document.getElementById('visited').style.display = 'block';
+						} else {
+							//alert("2");
+							document.getElementById('visited').style.display = 'none';
+						}
 						$(".fancybox").attr('rel', 'gallery').fancybox({
 							type : 'iframe',
 							autoSize : true,
@@ -209,21 +217,24 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li class="active"><a href="#">About Us</a>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li><a href="underconstruction.action">Sign Up</a>
+							<li class="active"><a href="loadAboutUs.action">About Us</a>
 							</li>
+							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a>
+							%> </i> </a></li>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
 							</li>
-							<li class="active"><a href="#">About Us</a>
+							<li class="active"><a href="loadAboutUs.action">About Us</a>
 							</li>
-							<li><a href="logout.action">Sign out</a>
-							</li>
+							<li><a href="logout.action">Sign out </a></li>
 							<%
 								}
 							%>
@@ -298,8 +309,9 @@
 									database systems for 2 years.</blockquote>
 							</div>
 							<div id="details" style="height: 15%">
-								<a href="https://www.facebook.com/harshvrdhnsingh" target="_blank"><img src="images/fbico.png"
-									width="50px" height="50px" /> </a>
+								<a href="https://www.facebook.com/harshvrdhnsingh"
+									target="_blank"><img src="images/fbico.png" width="50px"
+									height="50px" /> </a>
 							</div>
 						</div>
 					</div>
@@ -312,6 +324,11 @@
 						</div>
 					</div>
 
+				</div>
+				<div class="row" align="center" style="height: 5%">
+					<div class="col-lg-12">
+						<div class="copyright" style="width: 100%; text-align: center;">Copyright&copy;abhiDBharsh</div>
+					</div>
 				</div>
 			</div>
 		</div>

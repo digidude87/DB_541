@@ -22,6 +22,10 @@
 			method="loadPage">
 			<result name="success">/jsp/browseartistsbygenre.jsp</result>
 		</action>
+		<action name="visited" class="com.main.BrowseArtistAction"
+			method="loadPage">
+			<result name="success">/jsp/recentlyvisited.jsp</result>
+		</action>
 		<action name="loadSuggestions" class="com.main.BrowseArtistAction"
 			method="loadSuggestions">
 			<result name="success" type="json">/jsp/browseartists.jsp</result>
@@ -51,6 +55,9 @@
 			<result name="success" type="json">/jsp/artistprofile.jsp</result>
 		</action>
 		<action name="loadSongs" class="com.main.ArtistAction" method="loadSongs">
+			<result name="success" type="json">/jsp/artistprofile.jsp</result>
+		</action>
+		<action name="loadSuggestedArtist" class="com.main.ArtistAction" method="loadSuggestedArtist">
 			<result name="success" type="json">/jsp/artistprofile.jsp</result>
 		</action>
 		<action name="underconstruction" class="com.main.ArtistAction"

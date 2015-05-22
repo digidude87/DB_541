@@ -53,4 +53,15 @@ public class ArtistService {
 		List<SongTO> songs = new ArtistDAO().loadSongList(albumName,albumId);
 		return songs;
 	}
+	
+	public List<SongTO> loadTopSongList(String albumId) throws SQLException, IOException {
+		List<SongTO> songs = new ArtistDAO().loadTopSongList(albumId);
+		return songs;
+	}
+	
+	public List<ArtistTO> suggestArtists(String artistId) throws SQLException, IOException {
+		List<ArtistTO> suggestions = new ArtistDAO().suggestArtists(artistId);
+		return suggestions;
+	}
+	
 }

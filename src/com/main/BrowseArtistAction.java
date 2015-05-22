@@ -42,12 +42,12 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	/**
-	 * @param subGenresList the subGenresList to set
+	 * @param subGenresList
+	 *            the subGenresList to set
 	 */
 	public void setSubGenresList(String subGenresList) {
 		this.subGenresList = subGenresList;
 	}
-
 
 	/**
 	 * @return the genre
@@ -57,12 +57,12 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 	}
 
 	/**
-	 * @param genre the genre to set
+	 * @param genre
+	 *            the genre to set
 	 */
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
-
 
 	/**
 	 * @return the topListRecent
@@ -204,43 +204,51 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 
 	public String loadPage() {
 		String ret = SUCCESS;
+		session.put("usererr", null);
 		return ret;
 	}
 
 	public String loadSuggestions() {
 		String ret = SUCCESS;
 		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
-		if (this.searchText.length() > 2) {
-			Map<Integer, String> retMap = new HashMap<Integer, String>();
-			try {
-				retMap = new BrowseArtistService().loadArtists(this.searchText);
-				Iterator<Integer> iter = retMap.keySet().iterator();
-				SearchArtistTO temp;
-				int artistid;
-				while (iter.hasNext()) {
-					temp = new SearchArtistTO();
-					artistid = iter.next();
-					temp.setArtistId(artistid);
-					temp.setArtistName(retMap.get(artistid));
-					suggestions.add(temp);
-				}
-			} catch (SQLException sq) {
-				System.out.println("SqlException Occured");
-			} catch (IOException io) {
-				System.out.println("IOException Occured");
-			} catch (Exception e) {
-				System.out.println("Exception Occured");
-			}
-			Gson gson = new Gson();
-			this.suggestionList = gson.toJson(suggestions);
-			// System.out.println(suggestionList.toString());
+		List<Map<Integer, String>> retList = new ArrayList<Map<Integer, String>>();
+		try {
+			suggestions = new BrowseArtistService()
+					.loadArtists(this.searchText);
+			/*
+			 * Iterator<Integer> iter = retList.get(0).keySet().iterator();
+			 * SearchArtistTO temp; int artistid; while (iter.hasNext()) { temp
+			 * = new SearchArtistTO(); artistid = iter.next();
+			 * temp.setArtistId(artistid);
+			 * temp.setArtistName(retList.get(0).get(artistid));
+			 * suggestions.add(temp); } iter =
+			 * retList.get(1).keySet().iterator(); while (iter.hasNext()) { temp
+			 * = new SearchArtistTO(); artistid = iter.next();
+			 * temp.setArtistId(artistid);
+			 * temp.setArtistName(retList.get(1).get(artistid));
+			 * suggestions.add(temp); } iter =
+			 * retList.get(2).keySet().iterator(); while (iter.hasNext()) { temp
+			 * = new SearchArtistTO(); artistid = iter.next();
+			 * temp.setArtistId(artistid);
+			 * temp.setArtistName(retList.get(2).get(artistid));
+			 * suggestions.add(temp); }
+			 */
+		} catch (SQLException sq) {
+			System.out.println("SqlException Occured");
+		} catch (IOException io) {
+			System.out.println("IOException Occured");
+		} catch (Exception e) {
+			System.out.println("Exception Occured");
 		}
+		Gson gson = new Gson();
+		this.suggestionList = gson.toJson(suggestions);
+		// System.out.println(suggestionList.toString());
 		return ret;
 	}
 
 	public String loadSuggestionsLocation() {
 		String ret = SUCCESS;
-		//System.out.println(country);
+		// System.out.println(country);
 		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
 		Map<Integer, String> retMap = new HashMap<Integer, String>();
 		try {
@@ -268,15 +276,14 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		// System.out.println(suggestionList.toString());
 		return ret;
 	}
-	
+
 	public String loadSuggestionsGenre() {
 		String ret = SUCCESS;
-		//System.out.println(country);
+		// System.out.println(country);
 		List<SearchArtistTO> suggestions = new ArrayList<SearchArtistTO>();
 		Map<Integer, String> retMap = new HashMap<Integer, String>();
 		try {
-			retMap = new BrowseArtistService()
-					.loadArtistsGenre(this.genre);
+			retMap = new BrowseArtistService().loadArtistsGenre(this.genre);
 			Iterator<Integer> iter = retMap.keySet().iterator();
 			SearchArtistTO temp;
 			int artistid;
@@ -305,16 +312,20 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		String ret = SUCCESS;
 		String userName = "";
 		if (uid == null || uid.isEmpty()) {
+			session.put("usererr", "exception");
 			addActionError("User Id can't be blank");
 		} else if (password == null || password.isEmpty()) {
+			session.put("usererr", "exception");
 			addActionError("Password Can't be blank");
 		} else {
 			try {
 				// System.out.println(uid+"....."+password);
 				userName = new BrowseArtistService().verifyLogin(uid, password);
 				if (userName.equals("none")) {
+					session.put("usererr", "exception");
 					addActionError("Please enter valid credentials");
 				} else {
+					session.put("usererr", null);
 					session.put("artistName", userName);
 					session.put("artistId", uid);
 				}
@@ -329,12 +340,14 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		clearErrorsAndMessages();
 		String ret = SUCCESS;
 		session.put("artistName", null);
+		session.put("usererr", null);
 		return ret;
 	}
 
 	public String loadHome() {
 		clearErrorsAndMessages();
 		String ret = SUCCESS;
+		session.put("usererr", null);
 		return ret;
 	}
 
@@ -344,8 +357,7 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		List<SearchArtistTO> overAllTop = new ArrayList<SearchArtistTO>();
 		Map<Integer, String> retMap = new HashMap<Integer, String>();
 		try {
-			retMap = new BrowseArtistService()
-					.loadRecentTopArtists();
+			retMap = new BrowseArtistService().loadRecentTopArtists();
 			Iterator<Integer> iter = retMap.keySet().iterator();
 			SearchArtistTO temp;
 			int artistid;
@@ -358,8 +370,7 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 			}
 
 			retMap = new HashMap<Integer, String>();
-			retMap = new BrowseArtistService()
-					.loadOverAllTopArtists();
+			retMap = new BrowseArtistService().loadOverAllTopArtists();
 			iter = retMap.keySet().iterator();
 			while (iter.hasNext()) {
 				temp = new SearchArtistTO();
@@ -381,12 +392,12 @@ public class BrowseArtistAction extends ActionSupport implements SessionAware {
 		// System.out.println(suggestionList.toString());
 		return ret;
 	}
-	
-	public String loadSubgenres(){
+
+	public String loadSubgenres() {
 		List<SubGenreTO> subgenres = new ArrayList<SubGenreTO>();
 		try {
 			subgenres = new BrowseArtistService().loadSubGenres(genre);
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		Gson gson = new Gson();

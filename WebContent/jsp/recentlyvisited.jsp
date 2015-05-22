@@ -16,11 +16,34 @@
 <meta name="author" content="">
 <link rel="icon" type="image/gif" href="images/music.png">
 
+
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <script
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 <script src="js/bootstrap.min.js"></script>
+
+<link rel="stylesheet"
+	href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css"
+	media="screen" />
+<script type="text/javascript"
+	src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+<link rel="stylesheet"
+	href="fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5"
+	type="text/css" media="screen" />
+<script type="text/javascript"
+	src="fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript"
+	src="fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+
+<link rel="stylesheet"
+	href="fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7"
+	type="text/css" media="screen" />
+<script type="text/javascript"
+	src="fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+	
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/tabmenu.css" rel="stylesheet">
@@ -30,8 +53,8 @@
 
 <script>
 	$(document).ready(function() {
-		loadResults();
-		//alert(localStorage['visited']);
+		//localStorage['visited']="";
+		loadUrls();
 		if (localStorage['visited']) {
 			//alert("in");
 			document.getElementById('visited').style.display = 'block';
@@ -39,76 +62,95 @@
 			//alert("2");
 			document.getElementById('visited').style.display = 'none';
 		}
+		$(".fancybox").fancybox({
+			type : 'iframe',
+			autoSize : true,
+			openEffect : 'none',
+			closeEffect : 'none',
+			closeBtn : 'true',
+			helpers : {
+				overlay : {
+					closeClick : false
+				},
+				media : {}
+			}
+		});
 	});
 	var results;
 	function openModal() {
 		document.getElementById('modal').style.display = 'block';
 		document.getElementById('fade').style.display = 'block';
 	}
-
+	var urlArr = new Array();
+	function loadUrls() {
+		openModal();
+		$("#displayTxt").empty();
+		$('#displayTxt').append("<h3 style=\"text-align: center;\">Youtube Videos</h3><hr>");
+		$("#displayErr").empty();
+		$('#displayTxt').css("display", "none");
+		$('#displayErr').css("display", "none");
+		$("#displayTxt2").empty();
+		$('#displayTxt2').append("<h3 style=\"text-align: center;\">Songs on Spotify</h3><hr>");
+		$("#displayErr2").empty();
+		$('#displayTxt2').css("display", "none");
+		$('#displayErr2').css("display", "none");
+		//alert(localStorage['visited']);
+		parsed = JSON.parse(localStorage['visited']);
+		for ( var x in parsed) {
+			urlArr.push(parsed[x]);
+		}
+		c = 0;
+		d = "";
+		for ( var i in urlArr) {
+			//alert(urlArr[y]);
+			y = urlArr[i];
+			if (y.spotifyUrl == "") {
+				imgUrl = (y.youtubeUrl).replace("www", "img");
+				imgUrl = (imgUrl).replace("/v/", "/vi/");
+				//alert(y.youtubeUrl+"+"+c);
+				d += "<div>" + y.artist + " : " + y.songName + "</div>";
+				d += "<a class='fancybox fancybox.iframe' href='"+y.youtubeUrl+"'>";
+				d += "<img src=\""+imgUrl+"/default.jpg\"/></a>";
+				d += "<hr>";
+				c++;
+			}
+		}
+		if(c>0){
+			$('#displayTxt').append(d);
+			$('#displayTxt').show();
+		}
+		else {
+			$("#displayErr").append(
+			"<div class='results'>No videos viewed on Youtube</div>");
+			$('#displayErr').show();
+		}
+		c = 0;
+		d="";
+		for ( var i in urlArr) {
+			//alert(urlArr[y]);
+			y = urlArr[i];
+			if (y.youtubeUrl == "") {
+				d += "<div>" + y.artist + " : " + y.songName + "</div>";
+				d += "<a class='fancybox fancybox.iframe' href='"+y.spotifyUrl+"'>";
+				d += "<img src='images/spotify.png' height='32px' width='32px'/></a>";
+				d += "<hr>";
+				c++;
+			}
+		}
+		if(c>0){
+			$('#displayTxt2').append(d);
+			$('#displayTxt2').show();
+		}
+		else {
+			$("#displayErr2").append(
+			"<div class='results'>No songs listened on Spotify</div>");
+			$('#displayErr2').show();
+		}
+		closeModal();
+	}
 	function closeModal() {
 		document.getElementById('modal').style.display = 'none';
 		document.getElementById('fade').style.display = 'none';
-	}
-	function loadResults() {
-		openModal();
-		/* $("#displayTxt").empty();
-		$("#displayErr").empty();
-		$('#displayTxt').css("display", "none");
-		$('#displayErr').css("display", "none"); */
-		var json;
-		var c = 0;
-		results = "";
-		var searchField = $("#loadArtists").val();
-		$.getJSON('loadTopArtists', {
-			searchText : searchField
-		}, function(jsonResponse) {
-			json = $.parseJSON(jsonResponse.topListRecent);
-			$(json).each(
-					function(i, val) {
-						/* d = "<div class='title'><a href='" + val.completeUrl
-						+ " \")' target='_blank'>" + val.artistName
-						+ "</a></div>"; */
-						d = "<div><a href='loadartistPage.action?artistId="
-								+ val.artistId + " '>" + val.artistName
-								+ "</a></div>";
-						results += d;
-						results += "<hr>";
-						c++;
-					});
-			if (c > 0) {
-				$('#displayTxt').css("display", "block");
-				$("#displayTxt").append(results);
-			} else {
-				$('#displayErr').css("display", "block");
-				$("#displayErr").append(
-						"<div class='results'>No records returned</div>");
-			}
-			c = 0;
-			results = "";
-			json = $.parseJSON(jsonResponse.topListAll);
-			$(json).each(
-					function(i, val) {
-						/* d = "<div class='title'><a href='" + val.completeUrl
-						+ " \")' target='_blank'>" + val.artistName
-						+ "</a></div>"; */
-						d = "<div><a href='loadartistPage.action?artistId="
-								+ val.artistId + " '>" + val.artistName
-								+ "</a></div>";
-						results += d;
-						results += "<hr>";
-						c++;
-					});
-			if (c > 0) {
-				$('#displayTxt2').css("display", "block");
-				$("#displayTxt2").append(results);
-			} else {
-				$('#displayErr2').css("display", "block");
-				$("#displayErr2").append(
-						"<div class='results'>No records returned</div>");
-			}
-			closeModal();
-		});
 	}
 
 	function directTo(artistId) {
@@ -145,22 +187,23 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
-							<li id="visited" style="display: none;"><a
-								href="visited.action">Recently Viewed</a>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
+							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
-							<li><a href="loadAboutUs.action">About Us</a></li>
-							<li><a href="underconstruction.action">Sign Up</a></li>
+							<li><a href="underconstruction.action">Sign Up</a>
+							</li>
 							<%
 								} else {
 							%>
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
-							%> </i> </a></li>
-							<li id="visited" style="display: none;"><a
-								href="visited.action">Recently Viewed</a>
+							%> </i> </a>
 							</li>
-							<li><a href="loadAboutUs.action">About Us</a></li>
-							<li><a href="logout.action">Sign out </a></li>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
+							<li><a href="loadAboutUs.action">About Us</a>
+							</li>
+							<li><a href="logout.action">Sign out </a>
+							</li>
 							<%
 								}
 							%>
@@ -183,34 +226,23 @@
 
 		<div style="padding: 60px">
 			<div id="about" class="spacer">
-				<div class="row" align="center" style="height: 40%;">
+				<div class="row" align="center">
 					<div class="col-lg-12">
-						<nav>
-							<ul class="fancyNav">
-								<li id="name"><a href="loadartistbrowser.action">Name</a></li>
-								<li id="location"><a
-									href="loadartistbrowserlocation.action">Location</a></li>
-								<li id="genre"><a href="loadartistbrowsergenre.action">Genres</a>
-								</li>
-								<li id="top"><a href="loadartistbrowsertop.action">Top
-										20</a></li>
-							</ul>
-						</nav>
+						<div class="textContainer">
+							<h2 style="text-align: center;">RECENTLY VIEWED</h2>
+						</div>
 					</div>
 				</div>
-
 				<div class="row" align="center" style="height: 40%;">
 					<div class="col-lg-6">
 						<div class="textContainer" style="display: none" id="displayTxt">
-							<h3 style="text-align: center;">Top 20 Recent Artists</h3>
-							<hr>
 						</div>
 						<div class="textContainer" style="height: 50px; display: none"
 							id="displayErr"></div>
 					</div>
 					<div class="col-lg-6">
 						<div class="textContainer" style="display: none" id="displayTxt2">
-							<h3 style="text-align: center;">Top 20 Overall Artists</h3>
+							<h3 style="text-align: center;">Spotify Urls</h3>
 							<hr>
 						</div>
 						<div class="textContainer" style="height: 50px; display: none"

@@ -3,6 +3,20 @@ package com.TO;
 public class SearchArtistTO {
 	private int artistId;
 	private String artistName;
+	private String artistAlias;
+	/**
+	 * @return the artistAlias
+	 */
+	public String getArtistAlias() {
+		return artistAlias;
+	}
+
+	/**
+	 * @param artistAlias the artistAlias to set
+	 */
+	public void setArtistAlias(String artistAlias) {
+		this.artistAlias = artistAlias;
+	}
 
 	/**
 	 * @return the artistId

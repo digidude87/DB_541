@@ -12,8 +12,8 @@
 <link rel="icon" type="image/gif" href="images/music.png">
 <!--[if lte IE 8]><script src="/css/ie/html5shiv.js"></script><![endif]-->
 <%-- <script src="js/jquery.min.js"></script> --%>
-<%-- <script
-	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> --%>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -23,7 +23,16 @@
 <link href="css/formstyle.css" rel="stylesheet">
 
 <script>
-	
+$(document).ready(function(){
+	//alert(localStorage['visited']);
+	if (localStorage['visited']) {
+		//alert("in");
+		document.getElementById('visited').style.display = 'block';
+	} else {
+		//alert("2");
+		document.getElementById('visited').style.display = 'none';
+	}
+});
 </script>
 </head>
 
@@ -62,6 +71,7 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="underconstruction.action">Sign Up</a>
@@ -73,6 +83,7 @@
 								out.write(session.getAttribute("artistName").toString());
 							%> </i> </a>
 							</li>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="logout.action">Sign out </a>

@@ -22,6 +22,16 @@
 <link href="css/formstyle.css" rel="stylesheet">
 
 <script>
+	$(document).ready(function(){
+		//alert(localStorage['visited']);
+		if (localStorage['visited']) {
+			//alert("in");
+			document.getElementById('visited').style.display = 'block';
+		} else {
+			//alert("2");
+			document.getElementById('visited').style.display = 'none';
+		}
+	});
 	var audio = new Audio();
 	function loadResults() {
 		var json;
@@ -47,6 +57,16 @@
 	function loadartistbrowser() {
 		document.forms['noform'].action = 'loadartistbrowser';
 		document.forms['noform'].submit();
+	}
+
+	function signin() {
+		document.getElementById('noartist').style.display = 'none';
+		document.getElementById('home').style.display = 'block';
+	}
+
+	function revert() {
+		document.getElementById('noartist').style.display = 'block';
+		document.getElementById('home').style.display = 'none';
 	}
 </script>
 </head>
@@ -77,6 +97,7 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="underconstruction.action">Sign Up</a>
@@ -88,6 +109,7 @@
 								out.write(session.getAttribute("artistName").toString());
 							%> </i> </a>
 							</li>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="logout.action">Sign out </a>
@@ -130,27 +152,91 @@
 						<p>
 							A website dedicated to all musicians. Create you profile, get
 							your work across to the mass and reach out to the hardcore music
-							fans. <br> <br>Come join the community...
+							fans. <br> <br>Come join the community...<br> <br>
+							<b>EXISTING ARTISTS, CLICK HERE TO <a href="#"
+								onclick="signin()">SIGN IN</a>
+							</b>
 						</p>
 					</div>
 					<br>
 					<div class="fronttext">
 						<p>
-							
-							<a href="http://the.echonest.com" target="_blank"><img src="images/echonest.gif" width="150px;" height="50px;" /></a>
-							<a href="https://www.spotify.com" target="_blank"><img
-								src="images/spotify-connect.png" width="150px;" height="50px;" /></a>
-							<a href="https://www.youtube.com" target="_blank"><img src="images/youtube-logo.jpg" width="100px;" height="50px;" /></a>
-							<a href="https://tagul.com/" target="_blank"><img src="images/Tagul.png" width="100px;" height="50px;" /></a>
-							<a href="http://www.dynatable.com/" target="_blank"><img src="images/dynatable_logo.jpg" width="100px;" height="50px;" /></a>
+
+							<a href="http://the.echonest.com" target="_blank"><img
+								src="images/echonest.gif" width="150px;" height="50px;" /> </a> <a
+								href="https://www.spotify.com" target="_blank"><img
+								src="images/spotify-connect.png" width="150px;" height="50px;" />
+							</a> <a href="https://www.youtube.com" target="_blank"><img
+								src="images/youtube-logo.jpg" width="100px;" height="50px;" />
+							</a> <a href="https://tagul.com/" target="_blank"><img
+								src="images/Tagul.png" width="100px;" height="50px;" /> </a> <a
+								href="http://www.dynatable.com/" target="_blank"><img
+								src="images/dynatable_logo.jpg" width="100px;" height="50px;" />
+							</a>
 						</p>
 					</div>
 				</div>
 			</div>
 			<%
-				if (session.getAttribute("artistName") == null) {
+				if (session.getAttribute("artistName") == null
+						&& session.getAttribute("usererr") == null) {
 			%>
 			<div class="col-sm-5 col-sm-7">
+				<div id="noartist" class="homeinfo">
+					<form>
+						<h1 style="color: #f2ab00">Welcome Music Fans !!!</h1>
+						<br>
+						<p class="p-container">
+							Use the <b style="color: #f2ab00">Browse Artist</b> link on top
+							left of the page to search for your favorite artists.
+						</p>
+						<br>
+					</form>
+				</div>
+				<div id="home" class="homeinfo" style="display: none;">
+					<form action="login" method="post">
+						<h1>Artist Login</h1>
+						<s:if test="hasActionErrors()">
+							<div class="errors">
+								<s:actionerror />
+							</div>
+						</s:if>
+						<div class="inset">
+							<p>
+								<label for="userid">USER ID</label> <input type="text"
+									name="uid" id="uid">
+							</p>
+							<p>
+								<label for="password">PASSWORD</label> <input type="password"
+									name="password" id="password">
+							</p>
+							<hr>
+							<p>
+								<input type="submit" value="Log In"> <input
+									type="button" value="Cancel" onclick="revert()">
+							</p>
+							<br>
+						</div>
+					</form>
+				</div>
+			</div>
+			<%
+				} else if (session.getAttribute("artistName") == null
+						&& session.getAttribute("usererr") != null) {
+			%>
+
+			<div class="col-sm-5 col-sm-7">
+				<div id="noartist" class="homeinfo" style="display: none;">
+					<form>
+						<h1 style="color: #f2ab00">Welcome Music Fans !!!</h1>
+						<br>
+						<p class="p-container">
+							Use the <b style="color: #f2ab00">Browse Artist</b> link on top
+							left of the page to search for your favorite artists.
+						</p>
+						<br>
+					</form>
+				</div>
 				<div id="home" class="homeinfo">
 					<form action="login" method="post">
 						<h1>Artist Login</h1>
@@ -168,11 +254,13 @@
 								<label for="password">PASSWORD</label> <input type="password"
 									name="password" id="password">
 							</p>
+							<hr>
+							<p>
+								<input type="submit" value="Log In"> <input
+									type="button" value="Cancel" onclick="revert()">
+							</p>
+							<br>
 						</div>
-						<p class="p-container">
-							<span><a href="underconstruction.action">Forgot
-									password ?</a> </span> <input type="submit" value="Log in">
-						</p>
 					</form>
 				</div>
 			</div>

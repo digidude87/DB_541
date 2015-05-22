@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.DAO.BrowseArtistDAO;
+import com.TO.SearchArtistTO;
 import com.TO.SubGenreTO;
 
 public class BrowseArtistService {
-	public Map<Integer, String> loadArtists(String text) throws SQLException,
+	public List<SearchArtistTO>  loadArtists(String text) throws SQLException,
 			IOException {
-		Map<Integer, String> retMap = new HashMap<Integer, String>();
-		retMap = new BrowseArtistDAO().loadArtists(text);
-		return retMap;
+		List<SearchArtistTO> retList = new ArrayList<SearchArtistTO>();
+		retList = new BrowseArtistDAO().loadArtists(text);
+		return retList;
 	}
 
 	public Map<Integer, String> loadRecentTopArtists() throws SQLException,

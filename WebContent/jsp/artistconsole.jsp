@@ -29,6 +29,14 @@
 
 $(document).ready(function(){
   loadArtistBio();
+		//alert(localStorage['visited']);
+		if (localStorage['visited']) {
+			//alert("in");
+			document.getElementById('visited').style.display = 'block';
+		} else {
+			//alert("2");
+			document.getElementById('visited').style.display = 'none';
+		}
   $('li').click(function(){
 	  $(this).addClass('current')
 	       .siblings()
@@ -62,7 +70,7 @@ function closeModal() {
 	songStatDisp += "<th data-dynatable-column=\"viewCount\">View Count</th><th data-dynatable-column=\"crawlDate\">Crawl Date</th>";
 	songStatDisp += "<th data-dynatable-column=\"viewCountRate\">View Count Rate</th><th data-dynatable-column=\"crawlDelta\">Crawl Delta</th>";
 	songStatDisp += "</thead><tbody></tbody></table>";
-	
+
 	var artistDisp = "<div id=\"artistBio\"><h4 style=\"text-align : center\">ARTIST STATS</h4><hr></div>";
 
 	function loadAlbumStats() {
@@ -87,34 +95,51 @@ function closeModal() {
 			closeModal();
 		});
 	}
-	
+
 	function loadArtistBio() {
 		var json;
 		openModal();
 		$('#displayTab').hide();
 		$('#displayTab').empty();
 		$('#displayTab').append(artistDisp);
-		$.getJSON('loadArtistBio', {
-			searchArtist : artistId
-		}, function(jsonResponse) {
-			json = $.parseJSON(jsonResponse.artistBio);
-			$(json).each(
-					function(i, val) {
-						d="<h5><b>NAME : </b>"+val.artistName+"</h5><br>";
-						d+="<h5><b>ARTIST ALIAS(es) : </b>"+val.artistAlias+"</h5><br>";
-						d+="<h5><b>RECENT POPULARITY : </b>"+val.artistPopularityRecent+"</h5><br>";
-						d+="<h5><b>MAXIMUM RECENT POPULARITY : </b>"+val.maxRecent+"</h5><br>";
-						d+="<h5><b>OVERALL POPULARITY : </b>"+val.artistPopularityAll+"</h5><br>";
-						d+="<h5><b>MAXIMUM OVERALL POPULARITY : </b>"+val.maxAll+"</h5><br>";
-					});
-			$('#artistBio').append(d);
-			$('#displayTab').show();
-			//document.getElementById('songStatTable').style.display = 'none';
-			//document.getElementById('userMsg').style.display = 'none';
-			closeModal();
-		});
+		$
+				.getJSON(
+						'loadArtistBio',
+						{
+							searchArtist : artistId
+						},
+						function(jsonResponse) {
+							json = $.parseJSON(jsonResponse.artistBio);
+							$(json)
+									.each(
+											function(i, val) {
+												d = "<h5><b>NAME : </b>"
+														+ val.artistName
+														+ "</h5><br>";
+												d += "<h5><b>ARTIST ALIAS(es) : </b>"
+														+ val.artistAlias
+														+ "</h5><br>";
+												d += "<h5><b>RECENT POPULARITY : </b>"
+														+ val.artistPopularityRecent
+														+ "</h5><br>";
+												d += "<h5><b>MAXIMUM RECENT POPULARITY : </b>"
+														+ val.maxRecent
+														+ "</h5><br>";
+												d += "<h5><b>OVERALL POPULARITY : </b>"
+														+ val.artistPopularityAll
+														+ "</h5><br>";
+												d += "<h5><b>MAXIMUM OVERALL POPULARITY : </b>"
+														+ val.maxAll
+														+ "</h5><br>";
+											});
+							$('#artistBio').append(d);
+							$('#displayTab').show();
+							//document.getElementById('songStatTable').style.display = 'none';
+							//document.getElementById('userMsg').style.display = 'none';
+							closeModal();
+						});
 	}
-	
+
 	function loadSongStats() {
 		var json;
 		openModal();
@@ -175,6 +200,9 @@ function closeModal() {
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
+							</li>
 							<li><a href="loadAboutUs.action">About Us</a></li>
 							<li><a href="underconstruction.action">Sign Up</a></li>
 							<%
@@ -183,6 +211,9 @@ function closeModal() {
 							<li><a href="#" style="color: #f2ab00;"><i>Welcome <%
 								out.write(session.getAttribute("artistName").toString());
 							%> </i> </a></li>
+							<li id="visited" style="display: none;"><a
+								href="visited.action">Recently Viewed</a>
+							</li>
 							<li><a href="loadAboutUs.action">About Us</a></li>
 							<li><a href="logout.action">Sign out </a></li>
 							<%
@@ -214,7 +245,7 @@ function closeModal() {
 		<div class="row">
 			<div class="col-sm-2">
 				<div style="padding: 100px 0 10px 0">
-					 <div class="dataContainer">
+					<div class="dataContainer">
 						<!-- <h5 style="text-align: center;">Menu</h5>
 						<hr/> -->
 						<%-- <ul class="menu">
@@ -225,14 +256,13 @@ function closeModal() {
 							<li><a href="#" onclick="loadSongStats();"><span>Song Stats</span></a>
 							</li>
 						</ul> --%>
-						<div id="menu8">
+						<div>
 							<ul>
-								<li class="current"><a href="#" onclick="loadArtistBio();">Artist Stats</a>
-								</li>
+								<li class="current"><a href="#" onclick="loadArtistBio();">Artist
+										Stats</a></li>
 								<li><a href="#" onclick="loadAlbumStats();">Album Stats</a>
 								</li>
-								<li><a href="#" onclick="loadSongStats();">Song Stats</a>
-								</li>
+								<li><a href="#" onclick="loadSongStats();">Song Stats</a></li>
 								<!-- <li><a href="#4">Crawl History</a></li> -->
 							</ul>
 						</div>
@@ -241,9 +271,13 @@ function closeModal() {
 			</div>
 			<div class="col-sm-2 col-lg-10">
 				<div style="padding: 100px 0 10px 0">
-					<div class="tableContainer" id="displayTab">
-					</div>
+					<div class="tableContainer" id="displayTab"></div>
 				</div>
+			</div>
+		</div>
+		<div class="row" align="center" style="height: 5%">
+			<div class="col-lg-12">
+				<div class="copyright" style="width: 100%; text-align: center;">Copyright&copy;abhiDBharsh</div>
 			</div>
 		</div>
 	</div>

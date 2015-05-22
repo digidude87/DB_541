@@ -30,6 +30,16 @@
 <link href="css/formstyle.css" rel="stylesheet">
 
 <script>
+$(document).ready(function(){
+	//alert(localStorage['visited']);
+	if (localStorage['visited']) {
+		//alert("in");
+		document.getElementById('visited').style.display = 'block';
+	} else {
+		//alert("2");
+		document.getElementById('visited').style.display = 'none';
+	}
+});
 	var results;
 	function checkKey(e, textarea) {
 		var code = (e.keyCode ? e.keyCode : e.which);
@@ -48,15 +58,24 @@
 		document.getElementById('fade').style.display = 'none';
 	}
 	function loadResults() {
-		openModal();
+		
+		var json;
+		var c = 0;
+		results = "";
 		$("#displayTxt").empty();
 		$("#displayErr").empty();
 		$('#displayTxt').css("display", "none");
 		$('#displayErr').css("display", "none");
-		var json;
-		var c = 0;
-		results = "";
+		openModal();
 		var searchField = $("#loadArtists").val();
+		if(searchField==null || searchField==""){
+			$('#displayErr').css("display", "block");
+			$("#displayErr").append(
+					"<div class='results'>Please enter a valid search criteria</div>");
+			closeModal();
+			return;
+		}
+	
 		$.getJSON('loadSuggestions', {
 			searchText : searchField
 		}, function(jsonResponse) {
@@ -67,8 +86,11 @@
 						+ " \")' target='_blank'>" + val.artistName
 						+ "</a></div>"; */
 						d = "<div><a href='loadartistPage.action?artistId="
-								+ val.artistId + " '>" + val.artistName
-								+ "</a></div>";
+								+ val.artistId + " '>" + val.artistName;
+						/* if(val.artistAlias!=null){
+							d+=" ( Alias : "+val.artistAlias+")";
+						} */
+						d+= "</a></div>";
 						results += d;
 						results += "<hr>";
 						c++;
@@ -118,6 +140,7 @@
 							<%
 								if (session.getAttribute("artistName") == null) {
 							%>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="underconstruction.action">Sign Up</a>
@@ -129,6 +152,7 @@
 								out.write(session.getAttribute("artistName").toString());
 							%> </i> </a>
 							</li>
+							<li id="visited" style="display: none;"><a href="visited.action">Recently Viewed</a></li>
 							<li><a href="loadAboutUs.action">About Us</a>
 							</li>
 							<li><a href="logout.action">Sign out </a>
@@ -179,7 +203,7 @@
 								<input type="text" class="form-control"
 									placeholder=" Type an artist name to search	 ...."
 									name="searchText" id="loadArtists"
-									onkeydown="checkKey(event, this)"> <span
+									onkeydown="checkKey(event, this)" style="color: white;"> <span
 									class="input-group-btn">
 									<button type="button" class="btn btn-search"
 										onclick="loadResults();" id="searchButton">Search</button> </span>
