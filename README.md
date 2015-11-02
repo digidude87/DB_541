@@ -12,7 +12,7 @@ There are features like browser local storage based recently viewed display and 
 
 A website instance is hosted at :  http://artistopediav2.herokuapp.com/
 
-
+Watch Video : https://www.youtube.com/watch?v=e6QSjpHNHE8
 
 APIs Used : 
 - Spotify
